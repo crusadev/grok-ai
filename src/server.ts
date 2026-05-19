@@ -10,6 +10,7 @@ import { z } from 'zod';
 import config from './config';
 import { logger } from './logger';
 import { scrape } from './scrape';
+import { storeResult } from './db';
 import { AppError } from './errors';
 import type { ScrapeRequest, ScrapeResponse } from './types';
 
@@ -69,6 +70,7 @@ async function handleScrape(req: Request, res: Response): Promise<void> {
 
   try {
     const result = await limit(() => scrape(request));
+    await storeResult(request, result);
     sendJson(res, 200, { success: true, result });
   } catch (err) {
     const status = err instanceof AppError ? err.httpStatus : 500;

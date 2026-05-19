@@ -57,11 +57,21 @@ export function combined(key: SelectorKey): string {
   return getSelectors(key).join(', ');
 }
 
-/** Visible-text markers for the Grok guest sign-up wall (lowercase). */
+/**
+ * Visible-text markers for the Grok guest sign-up wall (lowercase). Grok uses
+ * a few variants; "higher priority access" is common to all seen so far.
+ */
 export const SIGNUP_WALL_PHRASES = [
   'sign up to keep chatting',
   'really high demand',
-  'signing up gives you higher priority',
+  'higher priority access',
+  'try again soon',
+];
+
+/** Visible-text markers for Grok's anti-bot "authenticity" block (lowercase). */
+export const BOT_CHECK_PHRASES = [
+  'unable to confirm user authenticity',
+  'log in or refresh the page',
 ];
 
 /** Visible-text markers for a Cloudflare / bot challenge (lowercase). */

@@ -11,6 +11,7 @@ import { logger } from './logger';
 import { getAsset, putAsset } from './assetCache';
 import {
   AppError,
+  BotCheckError,
   CloudflareError,
   ExtractionError,
   NavigationError,
@@ -19,6 +20,7 @@ import {
 } from './errors';
 import {
   combined,
+  BOT_CHECK_PHRASES,
   CLOUDFLARE_PHRASES,
   SIGNUP_WALL_PHRASES,
 } from './selectors';
@@ -243,10 +245,10 @@ async function dismissCookieBanner(page: Page): Promise<void> {
 /** Detect the sign-up wall or a Cloudflare challenge via visible page text. */
 async function detectBlocker(
   page: Page,
-): Promise<'signup' | 'cloudflare' | null> {
+): Promise<'signup' | 'cloudflare' | 'botcheck' | null> {
   const res = await page
     .evaluate(
-      (args: { signup: string[]; cloudflare: string[] }) => {
+      (args: { signup: string[]; cloudflare: string[]; botcheck: string[] }) => {
         const text = ((document.body && document.body.innerText) || '').toLowerCase();
         const title = (document.title || '').toLowerCase();
         return {
@@ -254,14 +256,20 @@ async function detectBlocker(
           cloudflare: args.cloudflare.some(
             (p) => text.includes(p) || title.includes(p),
           ),
+          botcheck: args.botcheck.some((p) => text.includes(p)),
         };
       },
-      { signup: SIGNUP_WALL_PHRASES, cloudflare: CLOUDFLARE_PHRASES },
+      {
+        signup: SIGNUP_WALL_PHRASES,
+        cloudflare: CLOUDFLARE_PHRASES,
+        botcheck: BOT_CHECK_PHRASES,
+      },
     )
     .catch(() => null);
   if (!res) return null;
   if (res.signup) return 'signup';
   if (res.cloudflare) return 'cloudflare';
+  if (res.botcheck) return 'botcheck';
   return null;
 }
 
@@ -272,6 +280,9 @@ async function assertNoBlockers(page: Page, stage: string): Promise<void> {
   }
   if (blocker === 'cloudflare') {
     throw new CloudflareError(`Cloudflare challenge ${stage}`);
+  }
+  if (blocker === 'botcheck') {
+    throw new BotCheckError(`Grok authenticity check ${stage}`);
   }
 }
 
@@ -326,6 +337,7 @@ interface PollState {
   hasCompletion: boolean;
   signupWall: boolean;
   cloudflare: boolean;
+  botCheck: boolean;
 }
 
 async function pollState(page: Page): Promise<PollState> {
@@ -336,6 +348,7 @@ async function pollState(page: Page): Promise<PollState> {
       completionSel: string;
       signup: string[];
       cloudflare: string[];
+      botcheck: string[];
     }) => {
       const messages = Array.from(
         document.querySelectorAll(args.answerSel),

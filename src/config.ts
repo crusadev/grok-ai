@@ -118,6 +118,9 @@ export interface AppConfig {
   cdnCacheEnabled: boolean;
   cdnCacheDir: string;
   cdnCacheHosts: string[];
+  /** Store successful scrape results in PostgreSQL. */
+  dbEnabled: boolean;
+  databaseUrl: string;
   defaultCountry: string;
   logLevel: string;
   /** Per-element selector overrides; empty list means "use built-in defaults". */
@@ -152,6 +155,8 @@ const config: AppConfig = {
   cdnCacheHosts: list('CDN_CACHE_HOSTS').length > 0
     ? list('CDN_CACHE_HOSTS')
     : ['cdn.grok.com'],
+  dbEnabled: bool('DB_ENABLED', true),
+  databaseUrl: str('DATABASE_URL', 'postgres://grok:grok@localhost:5433/grok'),
   defaultCountry: country('DEFAULT_COUNTRY', 'us'),
   logLevel: str('LOG_LEVEL', 'info'),
   selectorOverrides,

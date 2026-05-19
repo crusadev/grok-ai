@@ -9,6 +9,7 @@ export type ErrorCode =
   | 'BAD_REQUEST'
   | 'SIGNUP_WALL'
   | 'CLOUDFLARE'
+  | 'BOT_CHECK'
   | 'TIMEOUT'
   | 'NAVIGATION'
   | 'EXTRACTION'
@@ -51,6 +52,13 @@ export class SignupWallError extends AppError {
 export class CloudflareError extends AppError {
   constructor(message = 'Cloudflare challenge encountered') {
     super('CLOUDFLARE', message, { retryable: true, httpStatus: 502 });
+  }
+}
+
+/** Grok's anti-bot "confirm user authenticity" block — retry from a fresh IP. */
+export class BotCheckError extends AppError {
+  constructor(message = 'Grok could not confirm user authenticity') {
+    super('BOT_CHECK', message, { retryable: true, httpStatus: 502 });
   }
 }
 

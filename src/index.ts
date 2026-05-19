@@ -3,6 +3,7 @@ import config from './config';
 import { logger } from './logger';
 import { createApp } from './server';
 import { warmUp } from './grok';
+import { initDb, closeDb } from './db';
 
 const app = createApp();
 const server = app.listen(config.port, () => {
@@ -11,6 +12,9 @@ const server = app.listen(config.port, () => {
     'grok-scraper listening',
   );
 });
+
+// Prepare the results table (non-fatal — storage is best-effort).
+void initDb();
 
 // Best-effort: pre-download the stealth Chromium binary so the first request
 // is not delayed by the ~200MB download. Failure here is non-fatal.
@@ -28,7 +32,8 @@ function shutdown(signal: string): void {
   if (shuttingDown) return;
   shuttingDown = true;
   logger.info({ signal }, 'shutting down — waiting for in-flight requests');
-  server.close((err) => {
+  server.close(async (err) => {
+    await closeDb();
     if (err) {
       logger.error({ err: err.message }, 'error during shutdown');
       process.exit(1);
