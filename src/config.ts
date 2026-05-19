@@ -103,8 +103,8 @@ export interface AppConfig {
     /** Auth-username template; `{username}` and `{country}` are substituted. */
     usernameTemplate: string;
   };
-  maxConcurrency: number;
-  maxQueue: number;
+  workerConcurrency: number;
+  raceBrowsers: number;
   maxRetries: number;
   retryBaseDelayMs: number;
   retryMaxDelayMs: number;
@@ -118,9 +118,10 @@ export interface AppConfig {
   cdnCacheEnabled: boolean;
   cdnCacheDir: string;
   cdnCacheHosts: string[];
-  /** Store successful scrape results in PostgreSQL. */
-  dbEnabled: boolean;
+  /** PostgreSQL connection string (job storage). */
   databaseUrl: string;
+  /** Redis connection string (BullMQ queue). */
+  redisUrl: string;
   defaultCountry: string;
   logLevel: string;
   /** Per-element selector overrides; empty list means "use built-in defaults". */
@@ -140,8 +141,8 @@ const config: AppConfig = {
     port: int('DECODO_PORT', 7000, 1),
     usernameTemplate: str('DECODO_USERNAME_TEMPLATE', 'user-{username}-country-{country}'),
   },
-  maxConcurrency: int('MAX_CONCURRENCY', 3, 1),
-  maxQueue: int('MAX_QUEUE', 50, 0),
+  workerConcurrency: int('WORKER_CONCURRENCY', 1, 1),
+  raceBrowsers: int('BROWSERS_PER_REQUEST', 3, 1),
   maxRetries: int('MAX_RETRIES', 3, 0),
   retryBaseDelayMs: int('RETRY_BASE_DELAY_MS', 1000, 0),
   retryMaxDelayMs: int('RETRY_MAX_DELAY_MS', 8000, 0),
@@ -155,8 +156,8 @@ const config: AppConfig = {
   cdnCacheHosts: list('CDN_CACHE_HOSTS').length > 0
     ? list('CDN_CACHE_HOSTS')
     : ['cdn.grok.com'],
-  dbEnabled: bool('DB_ENABLED', true),
   databaseUrl: str('DATABASE_URL', 'postgres://grok:grok@localhost:5433/grok'),
+  redisUrl: str('REDIS_URL', 'redis://localhost:6380'),
   defaultCountry: country('DEFAULT_COUNTRY', 'us'),
   logLevel: str('LOG_LEVEL', 'info'),
   selectorOverrides,

@@ -13,10 +13,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "bullmq": "^5.34.0",
     "cloakbrowser": "^0.3.28",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "p-limit": "^3.1.0",
+    "ioredis": "^5.4.2",
     "pg": "^8.13.1",
     "pino": "^9.6.0",
     "playwright-core": "^1.53.0",

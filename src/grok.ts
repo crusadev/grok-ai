@@ -369,6 +369,7 @@ async function pollState(page: Page): Promise<PollState> {
         cloudflare: args.cloudflare.some(
           (p) => bodyText.includes(p) || title.includes(p),
         ),
+        botCheck: args.botcheck.some((p) => bodyText.includes(p)),
       };
     },
     {
@@ -377,6 +378,7 @@ async function pollState(page: Page): Promise<PollState> {
       completionSel: combined('completionMarker'),
       signup: SIGNUP_WALL_PHRASES,
       cloudflare: CLOUDFLARE_PHRASES,
+      botcheck: BOT_CHECK_PHRASES,
     },
   );
 }
@@ -406,6 +408,7 @@ async function waitForAnswer(
     const s = await pollState(page);
     if (s.signupWall) throw new SignupWallError('Sign-up wall while awaiting answer');
     if (s.cloudflare) throw new CloudflareError('Cloudflare challenge while awaiting answer');
+    if (s.botCheck) throw new BotCheckError('Authenticity check while awaiting answer');
 
     const hasAnswer =
       s.answerCount > answersBefore && s.text.length > 0 && s.text !== promptTrim;

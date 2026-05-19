@@ -7,8 +7,11 @@
 - We dont log in or use registered accounts in any way
 
 ## Architecture
-TypeScript HTTP service. Entry `src/index.ts`. Request flow:
-`server.ts` (Express + p-limit pool) → `scrape.ts` (retry loop) → `grok.ts` (one browser attempt).
+TypeScript service. Entry `src/index.ts` (HTTP server + BullMQ worker). Async flow:
+`server.ts` POST creates a job (`db.ts`, status `processing`) and enqueues it (`queue.ts`);
+`worker.ts` runs `scrape.ts` (races `BROWSERS_PER_REQUEST` browsers per round, first success
+wins) → `grok.ts` (one attempt); the outcome is written back to PostgreSQL; the caller polls
+`GET /scrape/:public_id`. Redis + PostgreSQL run via `docker compose`.
 - `config.ts` is the only place that reads `process.env`; it fails fast on bad config.
 - `proxy.ts` builds Decodo URLs; the rotating endpoint gives a fresh IP per launch, so a
   retry is just another attempt — do not add sticky-session tokens.

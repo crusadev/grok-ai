@@ -16,5 +16,19 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - grok_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   grok_pgdata:
+  grok_redis:

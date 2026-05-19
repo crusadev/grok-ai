@@ -34,27 +34,35 @@ An HTTP service that scrapes [Grok](https://grok.com) **as a guest** (no login) 
 stealth browser ([cloakbrowser](https://www.npmjs.com/package/cloakbrowser)) routed through
 [Decodo / Smartproxy](https://decodo.com) residential proxies.
 
-When Grok blocks a guest with the *"Sign up to keep chatting"* wall, the request is retried
-from a fresh proxy IP.
+Requests are **asynchronous**: `POST /scrape` returns a `public_id` immediately and the
+scrape runs on a background worker; the caller polls `GET /scrape/:public_id` until it is
+`success` or `failed`.
 
 ## How it works
 
 ```
-POST /scrape  ──►  pick a country-matched proxy  ──►  launch stealth browser
-                   ──►  open grok.com as guest    ──►  type prompt, submit
-                   ──►  wait for the streamed answer
-                   ──►  extract text / sources / html / markdown
-   sign-up wall or Cloudflare or timeout  ──►  retry from a new IP
+POST /scrape  ──►  create job (status: processing)  ──►  enqueue (BullMQ / Redis)
+                                                         └─►  202 { public_id }
+
+worker  ──►  for each retry round: race N browsers in parallel, each via a
+             fresh country-matched proxy IP  ──►  first success wins
+        ──►  open grok.com as guest, prompt, extract text/sources/html/markdown
+        ──►  store result in PostgreSQL (status: success | failed)
+
+GET /scrape/:public_id  ──►  { status, result? }   (poll until done)
 ```
+
+A round fails when every browser hits the sign-up wall, a bot/authenticity check, a
+Cloudflare challenge, or a timeout — the next round retries with fresh IPs.
 
 ## Setup
 
-Requires Node.js ≥ 24.
+Requires Node.js ≥ 24 and Docker.
 
 ```bash
 npm install
 cp .env.example .env       # then fill in real Decodo credentials
-docker compose up -d       # starts PostgreSQL (stores successful results)
+docker compose up -d       # starts PostgreSQL + Redis
 npm run build
 npm start                  # or: npm run dev
 ```
@@ -64,7 +72,7 @@ The server pre-downloads it on boot so the first request is not delayed.
 
 ## API
 
-### `POST /scrape`
+### `POST /scrape` — enqueue a job
 
 Request:
 ```json
@@ -78,10 +86,24 @@ Request:
 - `country` — optional 2-letter ISO code (defaults to `DEFAULT_COUNTRY`). Drives the proxy country.
 - `include` — optional; `html` / `markdown` default to `false`.
 
-Success (`200`):
+Response (`202`):
+```json
+{ "success": true, "public_id": "cloro_a7Kp2mXq9Lz3RtB", "status": "processing" }
+```
+Bad input → `400`; the queue being unavailable → `503`.
+
+### `GET /scrape/:public_id` — poll a job
+
+While running (`200`):
+```json
+{ "success": true, "public_id": "…", "status": "processing" }
+```
+Done (`200`):
 ```json
 {
   "success": true,
+  "public_id": "…",
+  "status": "success",
   "result": {
     "text": "Paris is the capital of France.",
     "sources": ["https://example.com/..."],
@@ -90,15 +112,15 @@ Success (`200`):
   }
 }
 ```
-`html` / `markdown` are scoped to Grok's answer message element and present only when requested.
+Failed (`200`): `{ "success": false, "status": "failed", "error": "<reason>" }`.
+Unknown id → `404`; malformed id → `400`.
 
-Failure: `{ "success": false, "error": "<reason>" }` with status `400` (bad input),
-`502` (retries exhausted), or `503` (server at capacity).
+`html` / `markdown` are scoped to Grok's answer element and present only when requested.
 
 ### `GET /health`
 
 ```json
-{ "status": "ok", "uptime": 12, "activeJobs": 1, "queuedJobs": 0 }
+{ "status": "ok", "uptime": 12 }
 ```
 
 ## Configuration (`.env`)
@@ -109,8 +131,10 @@ See [`.env.example`](./.env.example) for the full list. Key variables:
 |---|---|---|
 | `DECODO_USERNAME` / `DECODO_PASSWORD` | — (required) | Decodo proxy credentials |
 | `DECODO_USERNAME_TEMPLATE` | `user-{username}-country-{country}` | Auth-username format (plan-dependent) |
-| `MAX_CONCURRENCY` | 3 | Max simultaneous browsers |
-| `MAX_RETRIES` | 3 | Retry attempts after the first failure |
+| `DATABASE_URL` / `REDIS_URL` | local Docker defaults | PostgreSQL + Redis connections |
+| `WORKER_CONCURRENCY` | 1 | Scrape jobs processed in parallel |
+| `BROWSERS_PER_REQUEST` | 3 | Browsers raced per retry round (first success wins) |
+| `MAX_RETRIES` | 3 | Retry rounds after the first |
 | `NAV_TIMEOUT_MS` / `STREAM_TIMEOUT_MS` | 45000 / 120000 | Navigation / answer-streaming timeouts |
 | `HEADLESS` | true | Set `false` to watch the browser (selector discovery) |
 | `SELECTOR_*` | — | Override grok.com selectors without a redeploy |
@@ -131,16 +155,15 @@ checks match on visible text, so the scraper tolerates minor DOM drift.
 
 ## Storage
 
-Successful scrapes are stored in PostgreSQL, started via `docker compose up -d`.
-Storage is best-effort — a database outage never fails a scrape request. Disable
-it with `DB_ENABLED=false`.
+Every job is a row in PostgreSQL (started via `docker compose up -d`), created as
+`processing` and updated to `success` (with the result) or `failed` (with an error).
 
-Table `scrape_results`: `id`, `created_at`, `prompt`, `country`, `text`,
-`sources` (jsonb), `html`, `markdown`. Inspect it with:
+Table `scrape_results`: `id`, `public_id`, `status`, `created_at`, `updated_at`,
+`prompt`, `country`, `text`, `sources` (jsonb), `html`, `markdown`, `error`. Inspect:
 
 ```bash
 docker compose exec db psql -U grok -d grok \
-  -c 'SELECT id, created_at, country, prompt FROM scrape_results ORDER BY id DESC LIMIT 10;'
+  -c 'SELECT public_id, status, country, prompt FROM scrape_results ORDER BY id DESC LIMIT 10;'
 ```
 
 ## Verification
@@ -149,9 +172,12 @@ docker compose exec db psql -U grok -d grok \
 # health
 curl localhost:3000/health
 
-# end-to-end
+# enqueue a job -> { public_id, status: processing }
 curl -X POST localhost:3000/scrape -H 'Content-Type: application/json' \
-  -d '{"prompt":"What is the capital of France?","country":"us","include":{"markdown":true}}'
+  -d '{"prompt":"What is the capital of France?","country":"ca","include":{"markdown":true}}'
+
+# poll until success | failed
+curl localhost:3000/scrape/<public_id>
 
 # input validation -> 400
 curl -X POST localhost:3000/scrape -H 'Content-Type: application/json' -d '{"country":"usa"}'
@@ -161,14 +187,16 @@ curl -X POST localhost:3000/scrape -H 'Content-Type: application/json' -d '{"cou
 
 ```
 src/
-  index.ts      entrypoint — server start, browser warm-up, graceful shutdown
+  index.ts      entrypoint — HTTP server + worker startup, graceful shutdown
   config.ts     env parsing/validation (single source of truth)
-  server.ts     Express API + p-limit concurrency pool
-  scrape.ts     retry loop (fresh proxy IP per attempt)
+  server.ts     Express API (async POST + poll endpoints)
+  queue.ts      BullMQ queue + Redis connection
+  worker.ts     BullMQ worker — runs scrapes, writes outcomes to the DB
+  scrape.ts     retry rounds; races N browsers, first success wins
   grok.ts       one Grok automation attempt
   selectors.ts  grok.com selectors (verified against the live site)
   assetCache.ts local cache for grok.com CDN assets (proxy-bandwidth saving)
-  db.ts         PostgreSQL storage for successful results
+  db.ts         PostgreSQL job storage (create / complete / fail / get)
   proxy.ts      Decodo proxy URL builder
   markdown.ts   HTML → Markdown (turndown)
   errors.ts     typed error hierarchy

@@ -1,21 +1,22 @@
-/** HTTP API: POST /scrape and GET /health, with a concurrency-limited pool. */
+/**
+ * HTTP API for async scrape jobs.
+ *  - POST /scrape            → create a job, return its public_id (202)
+ *  - GET  /scrape/:public_id → poll job status / result
+ *  - GET  /health            → liveness probe
+ */
 import express, {
   type ErrorRequestHandler,
   type Express,
   type Request,
   type Response,
 } from 'express';
-import pLimit from 'p-limit';
+import { randomInt } from 'node:crypto';
 import { z } from 'zod';
 import config from './config';
 import { logger } from './logger';
-import { scrape } from './scrape';
-import { storeResult } from './db';
-import { AppError } from './errors';
-import type { ScrapeRequest, ScrapeResponse } from './types';
-
-/** Module-scope concurrency pool — caps simultaneous browser sessions. */
-const limit = pLimit(config.maxConcurrency);
+import { createJob, getJob } from './db';
+import { enqueueScrape } from './queue';
+import type { ScrapeRequest } from './types';
 
 const ScrapeSchema = z.object({
   prompt: z
@@ -37,15 +38,24 @@ const ScrapeSchema = z.object({
     .optional(),
 });
 
-function sendJson(res: Response, status: number, body: ScrapeResponse): void {
-  res.status(status).json(body);
+/** Public job id: `cloro_` followed by 15 random alphanumeric characters. */
+const ID_ALPHABET =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const PUBLIC_ID_RE = /^cloro_[A-Za-z0-9]{15}$/;
+
+function generatePublicId(): string {
+  let id = '';
+  for (let i = 0; i < 15; i += 1) {
+    id += ID_ALPHABET[randomInt(ID_ALPHABET.length)];
+  }
+  return `cloro_${id}`;
 }
 
-async function handleScrape(req: Request, res: Response): Promise<void> {
+async function handleCreateScrape(req: Request, res: Response): Promise<void> {
   const parsed = ScrapeSchema.safeParse(req.body);
   if (!parsed.success) {
     const message = parsed.error.issues.map((i) => i.message).join('; ');
-    sendJson(res, 400, { success: false, error: message });
+    res.status(400).json({ success: false, error: message });
     return;
   }
 
@@ -59,54 +69,86 @@ async function handleScrape(req: Request, res: Response): Promise<void> {
     },
   };
 
-  // Reject when the queue is saturated rather than letting clients hang.
-  if (config.maxQueue > 0 && limit.pendingCount >= config.maxQueue) {
-    sendJson(res, 503, {
-      success: false,
-      error: 'Server is at capacity, try again later',
-    });
+  const publicId = generatePublicId();
+  try {
+    await createJob(publicId, request);
+    await enqueueScrape({ publicId, request });
+  } catch (err) {
+    logger.error(
+      { err: err instanceof Error ? err.message : String(err) },
+      'failed to queue scrape job',
+    );
+    res.status(503).json({ success: false, error: 'Could not queue the request' });
     return;
   }
 
+  logger.info({ publicId, country: request.country }, 'scrape job queued');
+  res.status(202).json({ success: true, public_id: publicId, status: 'processing' });
+}
+
+async function handleGetScrape(req: Request, res: Response): Promise<void> {
+  const publicId = req.params.public_id;
+  if (!PUBLIC_ID_RE.test(publicId)) {
+    res.status(400).json({ success: false, error: 'invalid public_id' });
+    return;
+  }
+
+  let record;
   try {
-    const result = await limit(() => scrape(request));
-    await storeResult(request, result);
-    sendJson(res, 200, { success: true, result });
+    record = await getJob(publicId);
   } catch (err) {
-    const status = err instanceof AppError ? err.httpStatus : 500;
-    const message =
-      err instanceof AppError ? err.message : 'Internal server error';
     logger.error(
-      {
-        country: request.country,
-        code: err instanceof AppError ? err.code : 'UNKNOWN',
-        err: err instanceof Error ? err.message : String(err),
-      },
-      'scrape request failed',
+      { err: err instanceof Error ? err.message : String(err), publicId },
+      'failed to read job',
     );
-    sendJson(res, status, { success: false, error: message });
+    res.status(500).json({ success: false, error: 'Internal server error' });
+    return;
+  }
+
+  if (!record) {
+    res.status(404).json({ success: false, error: 'unknown public_id' });
+    return;
+  }
+
+  if (record.status === 'success') {
+    res.status(200).json({
+      success: true,
+      public_id: publicId,
+      status: 'success',
+      result: record.result,
+    });
+  } else if (record.status === 'failed') {
+    res.status(200).json({
+      success: false,
+      public_id: publicId,
+      status: 'failed',
+      error: record.error ?? 'scrape failed',
+    });
+  } else {
+    res.status(200).json({ success: true, public_id: publicId, status: 'processing' });
   }
 }
 
 function handleHealth(_req: Request, res: Response): void {
-  res.json({
-    status: 'ok',
-    uptime: Math.round(process.uptime()),
-    activeJobs: limit.activeCount,
-    queuedJobs: limit.pendingCount,
-  });
+  res.json({ status: 'ok', uptime: Math.round(process.uptime()) });
 }
 
 /** Handles malformed JSON bodies and any other middleware errors. */
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  logger.warn({ err: err instanceof Error ? err.message : String(err) }, 'request error');
-  sendJson(res as Response, 400, { success: false, error: 'Invalid request body' });
+  logger.warn(
+    { err: err instanceof Error ? err.message : String(err) },
+    'request error',
+  );
+  (res as Response)
+    .status(400)
+    .json({ success: false, error: 'Invalid request body' });
 };
 
 export function createApp(): Express {
   const app = express();
   app.use(express.json({ limit: '256kb' }));
-  app.post('/scrape', handleScrape);
+  app.post('/scrape', handleCreateScrape);
+  app.get('/scrape/:public_id', handleGetScrape);
   app.get('/health', handleHealth);
   app.use(errorHandler);
   return app;

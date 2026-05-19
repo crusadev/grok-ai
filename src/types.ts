@@ -22,16 +22,26 @@ export interface GrokResult {
   markdown?: string;
 }
 
-/** Response body returned by POST /scrape. */
-export interface ScrapeResponse {
-  success: boolean;
-  result?: GrokResult;
-  error?: string;
-}
-
 /** Options for a single Grok automation attempt. */
 export interface GrokAttemptOptions {
   prompt: string;
   proxyUrl: string;
   include: IncludeOptions;
+}
+
+/** Lifecycle status of an async scrape job. */
+export type JobStatus = 'processing' | 'success' | 'failed';
+
+/** Payload carried on the BullMQ scrape queue. */
+export interface ScrapeJobData {
+  publicId: string;
+  request: ScrapeRequest;
+}
+
+/** A scrape job as stored in / read back from the database. */
+export interface JobRecord {
+  publicId: string;
+  status: JobStatus;
+  result?: GrokResult;
+  error?: string;
 }
