@@ -1,0 +1,33 @@
+{
+  "name": "grok-ai",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HTTP service that scrapes Grok (grok.com) as a guest via a stealth browser and residential proxies.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "cloakbrowser": "^0.3.28",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "p-limit": "^3.1.0",
+    "pino": "^9.6.0",
+    "playwright-core": "^1.53.0",
+    "turndown": "^7.2.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^24.0.0",
+    "@types/turndown": "^5.0.5",
+    "pino-pretty": "^13.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
