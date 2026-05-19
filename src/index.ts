@@ -1,11 +1,12 @@
 /** Entrypoint: HTTP server + BullMQ worker, with startup and graceful shutdown. */
 import config from './config';
 import { logger } from './logger';
-import { createApp } from './server';
-import { warmUp } from './grok';
+import { createApp, startStatsTicker, stopStatsTicker } from './server';
+import { warmUp, closeBrowser } from './grok';
 import { initDb, closeDb } from './db';
 import { closeQueue } from './queue';
 import { startWorker, stopWorker } from './worker';
+import { closeEvents } from './events';
 
 const app = createApp();
 const server = app.listen(config.port, () => {
@@ -24,6 +25,7 @@ async function boot(): Promise<void> {
     process.exit(1);
   }
   startWorker();
+  startStatsTicker();
 }
 void boot();
 
@@ -43,8 +45,11 @@ function shutdown(signal: string): void {
   if (shuttingDown) return;
   shuttingDown = true;
   logger.info({ signal }, 'shutting down — waiting for in-flight work');
+  stopStatsTicker();
   server.close(async (err) => {
     await stopWorker();
+    await closeBrowser();
+    await closeEvents();
     await closeQueue();
     await closeDb();
     if (err) {

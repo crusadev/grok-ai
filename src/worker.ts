@@ -8,7 +8,6 @@ import { logger } from './logger';
 import { QUEUE_NAME, createRedisConnection } from './queue';
 import { scrape } from './scrape';
 import { completeJob, failJob } from './db';
-import { AppError } from './errors';
 import type { ScrapeJobData } from './types';
 
 let worker: Worker<ScrapeJobData> | undefined;
@@ -21,22 +20,31 @@ export function startWorker(): void {
     QUEUE_NAME,
     async (job) => {
       const { publicId, request } = job.data;
-      const startedAt = Date.now();
-      try {
-        const result = await scrape(request);
-        await completeJob(publicId, result);
+      const startedAtMs = Date.now();
+      // scrape() never throws — it returns the answer or the error plus stats.
+      const outcome = await scrape(request);
+      const meta = {
+        startedAtMs,
+        attempts: outcome.stats.attempts,
+        wallHits: outcome.stats.wallHits,
+      };
+      if (outcome.result) {
+        await completeJob(publicId, outcome.result, meta);
         logger.info(
-          { publicId, country: request.country, ms: Date.now() - startedAt },
+          { publicId, country: request.country, ms: Date.now() - startedAtMs, ...outcome.stats },
           'scrape job completed',
         );
-      } catch (err) {
-        const message =
-          err instanceof AppError || err instanceof Error
-            ? err.message
-            : String(err);
-        await failJob(publicId, message);
+      } else {
+        const message = outcome.error?.message ?? 'scrape failed';
+        await failJob(publicId, message, meta);
         logger.warn(
-          { publicId, country: request.country, ms: Date.now() - startedAt, err: message },
+          {
+            publicId,
+            country: request.country,
+            ms: Date.now() - startedAtMs,
+            err: message,
+            wallHits: outcome.stats.wallHits,
+          },
           'scrape job failed',
         );
       }

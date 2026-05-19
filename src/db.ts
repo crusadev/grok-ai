@@ -8,7 +8,22 @@
 import { Pool } from 'pg';
 import config from './config';
 import { logger } from './logger';
-import type { GrokResult, JobRecord, JobStatus, ScrapeRequest } from './types';
+import { publishEvent } from './events';
+import type {
+  Analytics,
+  GrokResult,
+  JobRecord,
+  JobStatus,
+  JobSummary,
+  ScrapeRequest,
+} from './types';
+
+/** Timing + attempt stats recorded when a job finishes. */
+interface JobUpdateMeta {
+  startedAtMs: number;
+  attempts: number;
+  wallHits: number;
+}
 
 let pool: Pool | undefined;
 
@@ -43,6 +58,9 @@ ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS public_id  TEXT;
 ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS status     TEXT NOT NULL DEFAULT 'processing';
 ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS error      TEXT;
+ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ;
+ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS attempts   INT;
+ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS wall_hits  INT;
 ALTER TABLE scrape_results ALTER COLUMN public_id TYPE TEXT;
 ALTER TABLE scrape_results ALTER COLUMN text DROP NOT NULL;
 ALTER TABLE scrape_results ALTER COLUMN sources DROP NOT NULL;
@@ -80,27 +98,49 @@ export async function createJob(
      VALUES ($1, 'processing', $2, $3)`,
     [publicId, request.prompt, request.country],
   );
+  publishEvent({
+    type: 'job',
+    summary: {
+      publicId,
+      prompt: request.prompt,
+      country: request.country,
+      status: 'processing',
+      createdAt: new Date().toISOString(),
+      scrapeMs: null,
+      totalMs: null,
+      attempts: null,
+      wallHits: null,
+    },
+  });
 }
 
-/** Mark a job successful and store its result. Never throws to the caller. */
+/** Mark a job successful and store its result + stats. Never throws. */
 export async function completeJob(
   publicId: string,
   result: GrokResult,
+  meta: JobUpdateMeta,
 ): Promise<void> {
   try {
-    await getPool().query(
+    const { rows } = await getPool().query(
       `UPDATE scrape_results
        SET status = 'success', text = $2, sources = $3::jsonb,
-           html = $4, markdown = $5, error = NULL, updated_at = now()
-       WHERE public_id = $1`,
+           html = $4, markdown = $5, error = NULL,
+           started_at = to_timestamp($6 / 1000.0), attempts = $7,
+           wall_hits = $8, updated_at = now()
+       WHERE public_id = $1
+       RETURNING ${SUMMARY_COLUMNS}`,
       [
         publicId,
         result.text,
         JSON.stringify(result.sources),
         result.html ?? null,
         result.markdown ?? null,
+        meta.startedAtMs,
+        meta.attempts,
+        meta.wallHits,
       ],
     );
+    if (rows.length > 0) publishEvent({ type: 'job', summary: toSummary(rows[0] as SummaryRow) });
   } catch (err) {
     logger.error(
       { err: err instanceof Error ? err.message : String(err), publicId },
@@ -109,15 +149,23 @@ export async function completeJob(
   }
 }
 
-/** Mark a job failed with an error message. Never throws to the caller. */
-export async function failJob(publicId: string, error: string): Promise<void> {
+/** Mark a job failed with an error message + stats. Never throws. */
+export async function failJob(
+  publicId: string,
+  error: string,
+  meta: JobUpdateMeta,
+): Promise<void> {
   try {
-    await getPool().query(
+    const { rows } = await getPool().query(
       `UPDATE scrape_results
-       SET status = 'failed', error = $2, updated_at = now()
-       WHERE public_id = $1`,
-      [publicId, error],
+       SET status = 'failed', error = $2,
+           started_at = to_timestamp($3 / 1000.0), attempts = $4,
+           wall_hits = $5, updated_at = now()
+       WHERE public_id = $1
+       RETURNING ${SUMMARY_COLUMNS}`,
+      [publicId, error, meta.startedAtMs, meta.attempts, meta.wallHits],
     );
+    if (rows.length > 0) publishEvent({ type: 'job', summary: toSummary(rows[0] as SummaryRow) });
   } catch (err) {
     logger.error(
       { err: err instanceof Error ? err.message : String(err), publicId },
@@ -126,34 +174,115 @@ export async function failJob(publicId: string, error: string): Promise<void> {
   }
 }
 
-/** Read a job back by public id; null if it does not exist. Throws on DB error. */
+/** Columns for a job summary, including derived scrape/total durations (ms). */
+const SUMMARY_COLUMNS = `
+  public_id, prompt, country, status, created_at, error, attempts, wall_hits,
+  (EXTRACT(EPOCH FROM (updated_at - started_at)) * 1000)::int AS scrape_ms,
+  (EXTRACT(EPOCH FROM (updated_at - created_at)) * 1000)::int AS total_ms`;
+
+interface SummaryRow {
+  public_id: string;
+  prompt: string;
+  country: string;
+  status: JobStatus;
+  created_at: Date;
+  error: string | null;
+  attempts: number | null;
+  wall_hits: number | null;
+  scrape_ms: number | null;
+  total_ms: number | null;
+}
+
+function toSummary(row: SummaryRow): JobSummary {
+  const summary: JobSummary = {
+    publicId: row.public_id,
+    prompt: row.prompt,
+    country: row.country,
+    status: row.status,
+    createdAt: row.created_at.toISOString(),
+    scrapeMs: row.scrape_ms,
+    totalMs: row.total_ms,
+    attempts: row.attempts,
+    wallHits: row.wall_hits,
+  };
+  if (row.error !== null) summary.error = row.error;
+  return summary;
+}
+
+/** Read a full job (summary + answer) by public id; null if unknown. */
 export async function getJob(publicId: string): Promise<JobRecord | null> {
   const { rows } = await getPool().query(
-    `SELECT public_id, status, text, sources, html, markdown, error
+    `SELECT ${SUMMARY_COLUMNS}, text, sources, html, markdown
      FROM scrape_results WHERE public_id = $1`,
     [publicId],
   );
   if (rows.length === 0) return null;
 
-  const row = rows[0] as {
-    public_id: string;
-    status: JobStatus;
+  const row = rows[0] as SummaryRow & {
     text: string | null;
     sources: string[] | null;
     html: string | null;
     markdown: string | null;
-    error: string | null;
   };
-
-  const record: JobRecord = { publicId: row.public_id, status: row.status };
+  const record: JobRecord = toSummary(row);
   if (row.status === 'success') {
     const result: GrokResult = { text: row.text ?? '', sources: row.sources ?? [] };
     if (row.html !== null) result.html = row.html;
     if (row.markdown !== null) result.markdown = row.markdown;
     record.result = result;
   }
-  if (row.error !== null) record.error = row.error;
   return record;
+}
+
+/**
+ * List recent jobs (newest first), without the answer bodies. Offset pagination
+ * is good enough at PoC scale; under a steady stream of inserts, page 2+ rows
+ * drift down by one every time a new job is created — acceptable for a history
+ * view of a benchmark run, would want cursor pagination for production.
+ */
+export async function listJobs(limit: number, offset = 0): Promise<JobSummary[]> {
+  const { rows } = await getPool().query(
+    `SELECT ${SUMMARY_COLUMNS} FROM scrape_results
+     ORDER BY created_at DESC, id DESC
+     LIMIT $1 OFFSET $2`,
+    [limit, offset],
+  );
+  return (rows as SummaryRow[]).map(toSummary);
+}
+
+/** Aggregate metrics across all jobs. */
+export async function getAnalytics(): Promise<Analytics> {
+  const { rows } = await getPool().query(
+    `SELECT
+       count(*)::int AS total,
+       count(*) FILTER (WHERE status = 'success')::int AS success,
+       count(*) FILTER (WHERE status = 'failed')::int AS failed,
+       count(*) FILTER (WHERE status = 'processing')::int AS processing,
+       avg(EXTRACT(EPOCH FROM (updated_at - started_at)) * 1000)
+         FILTER (WHERE status = 'success' AND started_at IS NOT NULL) AS avg_scrape_ms,
+       avg(EXTRACT(EPOCH FROM (updated_at - created_at)) * 1000)
+         FILTER (WHERE status IN ('success', 'failed') AND started_at IS NOT NULL)
+         AS avg_total_ms
+     FROM scrape_results`,
+  );
+  const r = rows[0] as {
+    total: number;
+    success: number;
+    failed: number;
+    processing: number;
+    avg_scrape_ms: string | null;
+    avg_total_ms: string | null;
+  };
+  const finished = r.success + r.failed;
+  return {
+    total: r.total,
+    success: r.success,
+    failed: r.failed,
+    processing: r.processing,
+    successRate: finished > 0 ? Math.round((r.success / finished) * 1000) / 10 : 0,
+    avgScrapeMs: r.avg_scrape_ms === null ? null : Math.round(Number(r.avg_scrape_ms)),
+    avgTotalMs: r.avg_total_ms === null ? null : Math.round(Number(r.avg_total_ms)),
+  };
 }
 
 /** Close the connection pool during shutdown. */

@@ -8,11 +8,12 @@
 
 ## Architecture
 TypeScript service, runs as Docker Compose services: `api`, `worker` (scalable), `db`,
-`redis`. Async flow: `server.ts` POST creates a job (`db.ts`, status `processing`) and
-enqueues it (`queue.ts`); a `worker.ts` consumer runs `scrape.ts`, which launches ONE
-browser and races a pool of `TABS_PER_REQUEST` contexts — each its own proxy IP, first
-success wins, a walled tab is replaced — via `grok.ts`; the outcome is written back to
-PostgreSQL; the caller polls `GET /scrape/:public_id`.
+`redis`, `web` (React dashboard in `web/`, nginx, proxies `/api` to `api`). Async flow: `server.ts` POST creates a job (`db.ts`, status `processing`) and
+enqueues it (`queue.ts`); a `worker.ts` consumer runs `scrape.ts`, which reuses one
+long-lived browser (`getBrowser` in `grok.ts`) and races a pool of `TABS_PER_REQUEST`
+contexts — each its own proxy IP, first success wins, losers aborted, a walled tab
+replaced; the outcome is written back to PostgreSQL; the caller polls
+`GET /scrape/:public_id`.
 - Entrypoints: `server-main.ts` (api), `worker-main.ts` (worker), `autoscaler.ts` (host —
   scales the `worker` service on queue depth); `index.ts` is single-process for `npm run dev`.
 - RAM is bounded by `MAX_WORKER_REPLICAS × WORKER_CONCURRENCY`; `config.ts` asserts it

@@ -1,9 +1,10 @@
 /** Worker entrypoint: BullMQ worker only — no HTTP server. Scaled horizontally. */
 import { logger } from './logger';
-import { warmUp } from './grok';
+import { warmUp, closeBrowser } from './grok';
 import { initDb, closeDb } from './db';
 import { closeQueue } from './queue';
 import { startWorker, stopWorker } from './worker';
+import { closeEvents } from './events';
 
 async function boot(): Promise<void> {
   // The database is load-bearing for the async job model — fail fast if absent.
@@ -40,6 +41,8 @@ function shutdown(signal: string): void {
     // stopWorker() waits for in-flight scrape jobs (each up to STREAM_TIMEOUT_MS)
     // to finish so their browsers close cleanly — no orphan Chromium processes.
     await stopWorker();
+    await closeBrowser();
+    await closeEvents();
     await closeQueue();
     await closeDb();
     logger.info('shutdown complete');

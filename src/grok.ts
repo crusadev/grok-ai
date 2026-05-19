@@ -9,7 +9,6 @@ import type { Browser, BrowserContext, Page, Route } from 'playwright-core';
 import config from './config';
 import { logger } from './logger';
 import { getAsset, putAsset } from './assetCache';
-import type { ProxyConfig } from './proxy';
 import {
   AppError,
   BotCheckError,
@@ -106,32 +105,73 @@ export async function launchBrowser(): Promise<Browser> {
   });
 }
 
+let sharedBrowser: Browser | undefined;
+let jobsOnSharedBrowser = 0;
+/**
+ * Serialize the launch/recycle path. Atomic-counter Node semantics make the
+ * happy path lock-free (every concurrent caller sees an integer that only
+ * grows), but the launch/close branch must be exclusive — otherwise two
+ * callers would race on `sharedBrowser.close()` and double-launch Chromium.
+ */
+let browserGate: Promise<void> = Promise.resolve();
+
+/**
+ * Return a long-lived browser shared across jobs in this worker process — far
+ * cheaper than launching/closing Chromium per job. Re-launches if the browser
+ * died or after `browserRecycleAfter` jobs (caps Chromium memory creep). Safe
+ * to call concurrently from multiple jobs (locked launch/recycle).
+ */
+export async function getBrowser(): Promise<Browser> {
+  const next = browserGate.then(async () => {
+    const healthy =
+      !!sharedBrowser &&
+      sharedBrowser.isConnected() &&
+      jobsOnSharedBrowser < config.browserRecycleAfter;
+    if (!healthy) {
+      if (sharedBrowser) await sharedBrowser.close().catch(() => undefined);
+      sharedBrowser = await launchBrowser();
+      jobsOnSharedBrowser = 0;
+    }
+    jobsOnSharedBrowser += 1;
+  });
+  // Swallow rejection on the chain so one failed launch does not poison the
+  // gate for every subsequent caller — they will retry the launch themselves.
+  browserGate = next.catch(() => undefined);
+  await next;
+  return sharedBrowser as Browser;
+}
+
+/** Close the shared browser — called on worker shutdown. */
+export async function closeBrowser(): Promise<void> {
+  if (sharedBrowser) {
+    await sharedBrowser.close().catch(() => undefined);
+    sharedBrowser = undefined;
+    jobsOnSharedBrowser = 0;
+  }
+}
+
 export interface GrokAttempt {
   prompt: string;
-  proxy: ProxyConfig;
   include: IncludeOptions;
 }
 
 /**
- * Run one attempt in its own browser context (tab) routed through `proxy`.
- * Returns the extracted answer or throws a typed AppError. The context is
- * always closed; the shared browser is left open for other tabs.
+ * Run one attempt inside a pre-created context (tab). The caller owns the
+ * context's lifecycle — scrape.ts closes it after each attempt and aborts the
+ * losing tabs of a race by closing their contexts. Returns the extracted
+ * answer or throws a typed AppError.
  */
 export async function runGrokAttempt(
-  browser: Browser,
+  context: BrowserContext,
   opts: GrokAttempt,
 ): Promise<GrokResult> {
-  const { prompt, proxy, include } = opts;
-  let context: BrowserContext | undefined;
-
+  const { prompt, include } = opts;
   try {
-    context = await browser.newContext({ proxy });
     const page = await context.newPage();
     page.setDefaultTimeout(config.navTimeoutMs);
 
     await installNetworkInterception(page);
     await navigate(page);
-    await dismissCookieBanner(page);
     await assertNoBlockers(page, 'after navigation');
 
     const composerSel = await locateComposer(page);
@@ -144,12 +184,6 @@ export async function runGrokAttempt(
     return await extractAnswer(page, include);
   } catch (err) {
     throw wrapError(err);
-  } finally {
-    if (context && !config.debugKeepBrowser) {
-      await context
-        .close()
-        .catch((e) => logger.warn({ err: errMsg(e) }, 'context close failed'));
-    }
   }
 }
 
@@ -314,12 +348,21 @@ async function countAnswers(page: Page): Promise<number> {
 /** Wait for the guest composer to become visible (retry-aware). */
 async function locateComposer(page: Page): Promise<string> {
   const sel = combined('promptInput');
-  const deadline = Date.now() + config.navTimeoutMs;
+  const startedAt = Date.now();
+  const deadline = startedAt + config.navTimeoutMs;
+  let triedCookieBanner = false;
   while (Date.now() < deadline) {
     await assertNoBlockers(page, 'while locating composer');
     const el = await page.$(sel);
     if (el && (await el.isVisible().catch(() => false))) {
       return sel;
+    }
+    // The cookie banner is normally a non-blocking strip and is left alone.
+    // Only if the composer stays unreachable might a modal variant be covering
+    // it — in that case dismiss the banner once as a fallback.
+    if (!triedCookieBanner && Date.now() - startedAt > 3000) {
+      triedCookieBanner = true;
+      await dismissCookieBanner(page);
     }
     await sleep(400);
   }

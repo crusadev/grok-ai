@@ -35,6 +35,21 @@ export async function enqueueScrape(data: ScrapeJobData): Promise<void> {
   });
 }
 
+/** Live queue stats: connected workers (= worker containers) and queue depth. */
+export async function getQueueStats(): Promise<{
+  workers: number;
+  waiting: number;
+  active: number;
+}> {
+  const q = getQueue();
+  const [workers, waiting, active] = await Promise.all([
+    q.getWorkers(),
+    q.getWaitingCount(),
+    q.getActiveCount(),
+  ]);
+  return { workers: workers.length, waiting, active };
+}
+
 /** Close the queue and its Redis connection during shutdown. */
 export async function closeQueue(): Promise<void> {
   if (queue) {

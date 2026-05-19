@@ -1,9 +1,10 @@
 /** API entrypoint: HTTP server only — enqueues jobs, serves job status. */
 import config from './config';
 import { logger } from './logger';
-import { createApp } from './server';
+import { createApp, startStatsTicker, stopStatsTicker } from './server';
 import { initDb, closeDb } from './db';
 import { closeQueue } from './queue';
+import { closeEvents } from './events';
 
 const app = createApp();
 const server = app.listen(config.port, () => {
@@ -19,12 +20,17 @@ initDb().catch((err) => {
   process.exit(1);
 });
 
+// Stream live queue stats to SSE subscribers (no-op when nobody is listening).
+startStatsTicker();
+
 let shuttingDown = false;
 function shutdown(signal: string): void {
   if (shuttingDown) return;
   shuttingDown = true;
   logger.info({ signal }, 'api shutting down');
+  stopStatsTicker();
   server.close(async (err) => {
+    await closeEvents();
     await closeQueue();
     await closeDb();
     if (err) {

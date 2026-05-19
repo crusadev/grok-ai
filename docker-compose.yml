@@ -62,10 +62,13 @@ services:
       # Containers have no display — force headless regardless of .env.
       HEADLESS: "true"
       DEBUG_KEEP_BROWSER: "false"
-    # One job (one browser + 5 tabs) per container; sized so the cgroup
-    # OOM-killer never kills Chromium mid-job. 8 replicas x 3g = 24g <= 26g.
-    mem_limit: 3g
-    shm_size: 1g
+    # One job (one browser + 5 tabs) per container, sized for a 32 GB box:
+    # 16 x 1.8g = 28.8g workers + ~1g for db/redis/api/web + OS headroom.
+    # Earlier 8x3g = 24g measured ~2.5g/worker peak with 5 tabs; if you see
+    # cgroup OOM kills here, drop TABS_PER_REQUEST=3 (cuts per-worker peak ~40%)
+    # before raising mem_limit, since RAM is already near the 32 GB ceiling.
+    mem_limit: 1800m
+    shm_size: 512m
     # Give a scaled-down / stopped worker time to drain in-flight scrape jobs
     # (each up to STREAM_TIMEOUT_MS) before Docker SIGKILLs it.
     stop_grace_period: 150s
@@ -80,6 +83,15 @@ services:
     volumes:
       # Shared CDN disk cache — first worker fetches an asset, the rest reuse it.
       - grok_cdncache:/app/.cache/cdn
+
+  web:
+    build: ./web
+    image: grok-ai-web:local
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    depends_on:
+      - api
 
 volumes:
   grok_pgdata:

@@ -115,6 +115,10 @@ export interface AppConfig {
   raceTabs: number;
   /** Total attempt budget per request across all tabs. */
   maxAttempts: number;
+  /** Wall-clock cap per scrape job — a doomed job is abandoned after this. */
+  jobDeadlineMs: number;
+  /** Re-launch the shared per-worker browser after this many jobs. */
+  browserRecycleAfter: number;
   navTimeoutMs: number;
   streamTimeoutMs: number;
   headless: boolean;
@@ -149,11 +153,13 @@ const config: AppConfig = {
     usernameTemplate: str('DECODO_USERNAME_TEMPLATE', 'user-{username}-country-{country}'),
   },
   workerConcurrency: int('WORKER_CONCURRENCY', 1, 1),
-  maxWorkerReplicas: int('MAX_WORKER_REPLICAS', 8, 1),
-  globalMaxConcurrentJobs: int('GLOBAL_MAX_CONCURRENT_JOBS', 8, 1),
+  maxWorkerReplicas: int('MAX_WORKER_REPLICAS', 16, 1),
+  globalMaxConcurrentJobs: int('GLOBAL_MAX_CONCURRENT_JOBS', 16, 1),
   pgPoolMax: int('PG_POOL_MAX', 6, 1),
   raceTabs: int('TABS_PER_REQUEST', 5, 1),
-  maxAttempts: int('MAX_ATTEMPTS', 40, 1),
+  maxAttempts: int('MAX_ATTEMPTS', 15, 1),
+  jobDeadlineMs: int('JOB_DEADLINE_MS', 150000, 1000),
+  browserRecycleAfter: int('BROWSER_RECYCLE_AFTER', 50, 1),
   navTimeoutMs: int('NAV_TIMEOUT_MS', 45000, 1000),
   streamTimeoutMs: int('STREAM_TIMEOUT_MS', 120000, 1000),
   headless: bool('HEADLESS', true),

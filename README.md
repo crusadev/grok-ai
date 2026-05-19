@@ -44,9 +44,9 @@ scrape runs on a background worker; the caller polls `GET /scrape/:public_id` un
 POST /scrape  ──►  create job (status: processing)  ──►  enqueue (BullMQ / Redis)
                                                          └─►  202 { public_id }
 
-worker  ──►  launch ONE browser, race a pool of TABS_PER_REQUEST tabs (contexts),
-             each through its own fresh country-matched proxy IP
-        ──►  first tab to answer wins; the rest are closed with the browser
+worker  ──►  reuse one long-lived browser, race a pool of TABS_PER_REQUEST tabs
+             (contexts), each through its own fresh country-matched proxy IP
+        ──►  first tab to answer wins; the losing tabs are aborted at once
         ──►  open grok.com as guest, prompt, extract text/sources/html/markdown
         ──►  store result in PostgreSQL (status: success | failed)
 
@@ -55,7 +55,8 @@ GET /scrape/:public_id  ──►  { status, result? }   (poll until done)
 
 A tab fails when it hits the sign-up wall, a bot/authenticity check, a Cloudflare
 challenge, or a timeout — it is replaced by a fresh tab (new proxy IP), keeping the
-pool full until an answer arrives or the `MAX_ATTEMPTS` budget is spent.
+pool full until an answer arrives, the `MAX_ATTEMPTS` budget runs out, or the
+`JOB_DEADLINE_MS` wall-clock cap is hit.
 
 ## Setup
 
@@ -65,11 +66,18 @@ Requires Node.js ≥ 24 and Docker.
 npm install
 cp .env.example .env       # then fill in real Decodo credentials
 npm run build
-docker compose up -d --build   # builds the image; starts db, redis, api, worker
+docker compose up -d --build   # builds images; starts db, redis, api, worker, web
 ```
 
-`api` is on `localhost:3000`. For local single-process debugging without Docker:
-`npm run dev`.
+The **dashboard UI** is on `localhost:8088`; the `api` on `localhost:3000`. For local
+single-process backend debugging without Docker: `npm run dev`.
+
+## Dashboard
+
+`web/` is a React (Vite + TypeScript) control console — submit prompts, watch the
+5-tab race with a live timer, and see per-request timing (scrape time vs total
+round-trip), wall-hit counts, history, analytics, and live worker/browser counts. It
+is served by nginx, which also proxies `/api` to the `api` service.
 
 ## Scaling
 
@@ -141,6 +149,26 @@ Failed (`200`): `{ "success": false, "status": "failed", "error": "<reason>" }`.
 Unknown id → `404`; malformed id → `400`.
 
 `html` / `markdown` are scoped to Grok's answer element and present only when requested.
+
+### `GET /scrapes?limit=100`
+
+Recent jobs (newest first), without the answer bodies — used by the dashboard history.
+`{ "success": true, "jobs": [ { publicId, prompt, country, status, createdAt,
+scrapeMs, totalMs, attempts, wallHits, error? }, … ] }`.
+
+### `GET /analytics`
+
+`{ total, success, failed, processing, successRate, avgScrapeMs, avgTotalMs }` —
+`successRate` is the percentage of finished jobs that succeeded; `avgScrapeMs` averages
+worker-pickup → answer.
+
+### `GET /stats`
+
+`{ workers, browsers, tabsPerRequest, queue: { waiting, active } }` — live worker count
+(one browser per worker) and queue depth.
+
+`GET /scrape/:public_id` also returns `createdAt`, `scrapeMs`, `totalMs`, `attempts`,
+`wallHits` alongside the result.
 
 ### `GET /health`
 
