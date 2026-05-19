@@ -5,10 +5,11 @@
  * launch -> navigate -> prompt as guest -> wait for the streamed answer ->
  * extract. It throws typed errors; the retry policy lives in scrape.ts.
  */
-import type { Browser, Page, Route } from 'playwright-core';
+import type { Browser, BrowserContext, Page, Route } from 'playwright-core';
 import config from './config';
 import { logger } from './logger';
 import { getAsset, putAsset } from './assetCache';
+import type { ProxyConfig } from './proxy';
 import {
   AppError,
   BotCheckError,
@@ -25,7 +26,7 @@ import {
   SIGNUP_WALL_PHRASES,
 } from './selectors';
 import { htmlToMarkdown } from './markdown';
-import type { GrokAttemptOptions, GrokResult } from './types';
+import type { GrokResult, IncludeOptions } from './types';
 
 const GROK_URL = 'https://grok.com';
 
@@ -41,7 +42,9 @@ const dynamicImport = new Function('s', 'return import(s)') as (
 
 interface CloakLaunchOptions {
   headless?: boolean;
-  proxy?: string;
+  proxy?:
+    | string
+    | { server: string; username?: string; password?: string; bypass?: string };
   humanize?: boolean;
   args?: string[];
 }
@@ -89,19 +92,41 @@ function wrapError(err: unknown): AppError {
   return new NavigationError(`Unexpected browser error: ${msg}`);
 }
 
-/** Run an attempt: returns the extracted answer or throws a typed AppError. */
-export async function runGrokAttempt(opts: GrokAttemptOptions): Promise<GrokResult> {
-  const { prompt, proxyUrl, include } = opts;
+/**
+ * Launch one stealth browser. It is launched with a placeholder proxy so each
+ * context (tab) can override it with its own proxy — Playwright requires a
+ * launch-level proxy for per-context proxy to take effect.
+ */
+export async function launchBrowser(): Promise<Browser> {
   const cloak = await loadCloak();
-  let browser: Browser | undefined;
+  return cloak.launch({
+    headless: config.headless,
+    humanize: config.humanize,
+    proxy: { server: 'per-context' },
+  });
+}
+
+export interface GrokAttempt {
+  prompt: string;
+  proxy: ProxyConfig;
+  include: IncludeOptions;
+}
+
+/**
+ * Run one attempt in its own browser context (tab) routed through `proxy`.
+ * Returns the extracted answer or throws a typed AppError. The context is
+ * always closed; the shared browser is left open for other tabs.
+ */
+export async function runGrokAttempt(
+  browser: Browser,
+  opts: GrokAttempt,
+): Promise<GrokResult> {
+  const { prompt, proxy, include } = opts;
+  let context: BrowserContext | undefined;
 
   try {
-    browser = await cloak.launch({
-      headless: config.headless,
-      proxy: proxyUrl,
-      humanize: config.humanize,
-    });
-    const page = await browser.newPage();
+    context = await browser.newContext({ proxy });
+    const page = await context.newPage();
     page.setDefaultTimeout(config.navTimeoutMs);
 
     await installNetworkInterception(page);
@@ -120,16 +145,10 @@ export async function runGrokAttempt(opts: GrokAttemptOptions): Promise<GrokResu
   } catch (err) {
     throw wrapError(err);
   } finally {
-    if (browser) {
-      if (config.debugKeepBrowser) {
-        logger.warn(
-          'DEBUG_KEEP_BROWSER is set — leaving the browser open for inspection (kill it manually when done)',
-        );
-      } else {
-        await browser
-          .close()
-          .catch((e) => logger.warn({ err: errMsg(e) }, 'browser close failed'));
-      }
+    if (context && !config.debugKeepBrowser) {
+      await context
+        .close()
+        .catch((e) => logger.warn({ err: errMsg(e) }, 'context close failed'));
     }
   }
 }
@@ -440,7 +459,7 @@ async function waitForAnswer(
 /** Extract the newest assistant answer (text, sources, optional html/markdown). */
 async function extractAnswer(
   page: Page,
-  include: GrokAttemptOptions['include'],
+  include: IncludeOptions,
 ): Promise<GrokResult> {
   const data = await page.evaluate(
     (args: {

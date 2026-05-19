@@ -22,13 +22,6 @@ export interface GrokResult {
   markdown?: string;
 }
 
-/** Options for a single Grok automation attempt. */
-export interface GrokAttemptOptions {
-  prompt: string;
-  proxyUrl: string;
-  include: IncludeOptions;
-}
-
 /** Lifecycle status of an async scrape job. */
 export type JobStatus = 'processing' | 'success' | 'failed';
 

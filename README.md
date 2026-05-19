@@ -44,16 +44,18 @@ scrape runs on a background worker; the caller polls `GET /scrape/:public_id` un
 POST /scrape  ──►  create job (status: processing)  ──►  enqueue (BullMQ / Redis)
                                                          └─►  202 { public_id }
 
-worker  ──►  for each retry round: race N browsers in parallel, each via a
-             fresh country-matched proxy IP  ──►  first success wins
+worker  ──►  launch ONE browser, race a pool of TABS_PER_REQUEST tabs (contexts),
+             each through its own fresh country-matched proxy IP
+        ──►  first tab to answer wins; the rest are closed with the browser
         ──►  open grok.com as guest, prompt, extract text/sources/html/markdown
         ──►  store result in PostgreSQL (status: success | failed)
 
 GET /scrape/:public_id  ──►  { status, result? }   (poll until done)
 ```
 
-A round fails when every browser hits the sign-up wall, a bot/authenticity check, a
-Cloudflare challenge, or a timeout — the next round retries with fresh IPs.
+A tab fails when it hits the sign-up wall, a bot/authenticity check, a Cloudflare
+challenge, or a timeout — it is replaced by a fresh tab (new proxy IP), keeping the
+pool full until an answer arrives or the `MAX_ATTEMPTS` budget is spent.
 
 ## Setup
 
@@ -133,8 +135,8 @@ See [`.env.example`](./.env.example) for the full list. Key variables:
 | `DECODO_USERNAME_TEMPLATE` | `user-{username}-country-{country}` | Auth-username format (plan-dependent) |
 | `DATABASE_URL` / `REDIS_URL` | local Docker defaults | PostgreSQL + Redis connections |
 | `WORKER_CONCURRENCY` | 1 | Scrape jobs processed in parallel |
-| `BROWSERS_PER_REQUEST` | 3 | Browsers raced per retry round (first success wins) |
-| `MAX_RETRIES` | 3 | Retry rounds after the first |
+| `TABS_PER_REQUEST` | 5 | Tabs (contexts) raced per request, each its own proxy |
+| `MAX_ATTEMPTS` | 40 | Total attempt budget per request across all tabs |
 | `NAV_TIMEOUT_MS` / `STREAM_TIMEOUT_MS` | 45000 / 120000 | Navigation / answer-streaming timeouts |
 | `HEADLESS` | true | Set `false` to watch the browser (selector discovery) |
 | `SELECTOR_*` | — | Override grok.com selectors without a redeploy |

@@ -9,8 +9,9 @@
 ## Architecture
 TypeScript service. Entry `src/index.ts` (HTTP server + BullMQ worker). Async flow:
 `server.ts` POST creates a job (`db.ts`, status `processing`) and enqueues it (`queue.ts`);
-`worker.ts` runs `scrape.ts` (races `BROWSERS_PER_REQUEST` browsers per round, first success
-wins) → `grok.ts` (one attempt); the outcome is written back to PostgreSQL; the caller polls
+`worker.ts` runs `scrape.ts`, which launches ONE browser and races a pool of
+`TABS_PER_REQUEST` contexts — each its own proxy IP, first success wins, a walled tab is
+replaced — via `grok.ts`; the outcome is written back to PostgreSQL; the caller polls
 `GET /scrape/:public_id`. Redis + PostgreSQL run via `docker compose`.
 - `config.ts` is the only place that reads `process.env`; it fails fast on bad config.
 - `proxy.ts` builds Decodo URLs; the rotating endpoint gives a fresh IP per launch, so a

@@ -104,10 +104,10 @@ export interface AppConfig {
     usernameTemplate: string;
   };
   workerConcurrency: number;
-  raceBrowsers: number;
-  maxRetries: number;
-  retryBaseDelayMs: number;
-  retryMaxDelayMs: number;
+  /** Tabs (contexts) raced in parallel per request, each with its own proxy. */
+  raceTabs: number;
+  /** Total attempt budget per request across all tabs. */
+  maxAttempts: number;
   navTimeoutMs: number;
   streamTimeoutMs: number;
   headless: boolean;
@@ -142,10 +142,8 @@ const config: AppConfig = {
     usernameTemplate: str('DECODO_USERNAME_TEMPLATE', 'user-{username}-country-{country}'),
   },
   workerConcurrency: int('WORKER_CONCURRENCY', 1, 1),
-  raceBrowsers: int('BROWSERS_PER_REQUEST', 3, 1),
-  maxRetries: int('MAX_RETRIES', 3, 0),
-  retryBaseDelayMs: int('RETRY_BASE_DELAY_MS', 1000, 0),
-  retryMaxDelayMs: int('RETRY_MAX_DELAY_MS', 8000, 0),
+  raceTabs: int('TABS_PER_REQUEST', 5, 1),
+  maxAttempts: int('MAX_ATTEMPTS', 40, 1),
   navTimeoutMs: int('NAV_TIMEOUT_MS', 45000, 1000),
   streamTimeoutMs: int('STREAM_TIMEOUT_MS', 120000, 1000),
   headless: bool('HEADLESS', true),

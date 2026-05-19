@@ -1,88 +1,109 @@
 /**
- * Scrape orchestration. Each round launches several browser attempts in
- * parallel — every one through a fresh rotating proxy IP — and takes the first
- * that succeeds (`Promise.any`). If a whole round fails, it backs off and
- * retries until the answer is obtained or the retry budget is spent.
+ * Scrape orchestration.
+ *
+ * One browser is launched per request. Inside it, `raceTabs` contexts ("tabs")
+ * run in parallel, each routed through its own fresh rotating proxy IP. The
+ * first tab to return an answer wins; the rest are torn down with the browser.
+ * When a tab fails fast (e.g. the sign-up wall) it is replaced by a new tab,
+ * keeping the pool full until a result arrives or the attempt budget is spent.
  */
 import config from './config';
 import { logger } from './logger';
-import { buildProxyUrl } from './proxy';
-import { runGrokAttempt } from './grok';
+import { buildProxy } from './proxy';
+import { launchBrowser, runGrokAttempt } from './grok';
 import { AppError, NavigationError } from './errors';
+import type { Browser } from 'playwright-core';
 import type { GrokResult, ScrapeRequest } from './types';
 
-const sleep = (ms: number): Promise<void> =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-/** Exponential backoff with jitter, capped; `round` is 1-based. */
-function backoffDelay(round: number): number {
-  const base = config.retryBaseDelayMs * 2 ** (round - 1);
-  return Math.min(base, config.retryMaxDelayMs) + Math.floor(Math.random() * 250);
+/** Pick the most informative error from the failed attempts. */
+function pickError(errors: AppError[]): AppError {
+  return (
+    errors.find((e) => !e.retryable) ??
+    errors[errors.length - 1] ??
+    new NavigationError('scrape produced no result')
+  );
 }
 
-/** Pick the most informative error from a failed round's rejections. */
-function pickError(errors: unknown[]): AppError {
-  const appErrors = errors.map((e) =>
-    e instanceof AppError ? e : new NavigationError(String(e)),
-  );
-  // A non-retryable error means stop immediately; otherwise report the last.
-  return (
-    appErrors.find((e) => !e.retryable) ??
-    appErrors[appErrors.length - 1] ??
-    new NavigationError('scrape failed')
-  );
+/** Run the replenishing tab race inside an already-launched browser. */
+function raceTabs(browser: Browser, req: ScrapeRequest): Promise<GrokResult> {
+  return new Promise<GrokResult>((resolve, reject) => {
+    const { raceTabs: tabs, maxAttempts } = config;
+    const errors: AppError[] = [];
+    const startedAt = Date.now();
+    let started = 0;
+    let liveSlots = tabs;
+    let settled = false;
+
+    // A slot keeps opening fresh tabs until one wins, an unrecoverable error
+    // occurs, or the shared attempt budget is exhausted.
+    async function runSlot(slot: number): Promise<void> {
+      while (!settled && started < maxAttempts) {
+        const attempt = (started += 1);
+        try {
+          const result = await runGrokAttempt(browser, {
+            prompt: req.prompt,
+            proxy: buildProxy(req.country),
+            include: req.include,
+          });
+          if (!settled) {
+            settled = true;
+            logger.info(
+              {
+                attempt,
+                slot,
+                country: req.country,
+                ms: Date.now() - startedAt,
+                sources: result.sources.length,
+              },
+              'scrape succeeded',
+            );
+            resolve(result);
+          }
+          return;
+        } catch (err) {
+          const appErr =
+            err instanceof AppError ? err : new NavigationError(String(err));
+          errors.push(appErr);
+          logger.warn(
+            { attempt, slot, country: req.country, code: appErr.code },
+            'tab attempt failed',
+          );
+          if (!appErr.retryable) {
+            if (!settled) {
+              settled = true;
+              reject(appErr);
+            }
+            return;
+          }
+          // Retryable — loop and open a fresh tab in this slot.
+        }
+      }
+      liveSlots -= 1;
+      if (liveSlots === 0 && !settled) {
+        settled = true;
+        reject(pickError(errors));
+      }
+    }
+
+    for (let i = 0; i < tabs; i += 1) void runSlot(i + 1);
+  });
 }
 
 /**
  * Scrape Grok for the given request. Returns the first successful answer from
- * a race of `config.raceBrowsers` parallel attempts; throws an AppError if
- * every round fails.
+ * the tab race; throws an AppError if every attempt fails.
  */
 export async function scrape(req: ScrapeRequest): Promise<GrokResult> {
-  const rounds = config.maxRetries + 1;
-  let lastError: AppError = new NavigationError('scrape produced no result');
-
-  for (let round = 1; round <= rounds; round += 1) {
-    const startedAt = Date.now();
-    const attempts = Array.from({ length: config.raceBrowsers }, () =>
-      runGrokAttempt({
-        prompt: req.prompt,
-        proxyUrl: buildProxyUrl(req.country),
-        include: req.include,
-      }),
-    );
-
-    try {
-      // First attempt to succeed wins; the losers run on and close themselves.
-      const result = await Promise.any(attempts);
-      logger.info(
-        {
-          round,
-          country: req.country,
-          browsers: attempts.length,
-          ms: Date.now() - startedAt,
-          sources: result.sources.length,
-        },
-        'scrape round succeeded',
-      );
-      return result;
-    } catch (err) {
-      const errors = err instanceof AggregateError ? err.errors : [err];
-      lastError = pickError(errors);
-      logger.warn(
-        {
-          round,
-          rounds,
-          country: req.country,
-          code: lastError.code,
-          ms: Date.now() - startedAt,
-        },
-        'scrape round failed',
-      );
-      if (!lastError.retryable || round === rounds) throw lastError;
-      await sleep(backoffDelay(round));
+  const browser = await launchBrowser();
+  try {
+    return await raceTabs(browser, req);
+  } finally {
+    if (config.debugKeepBrowser) {
+      logger.warn('DEBUG_KEEP_BROWSER is set — leaving the browser open');
+    } else {
+      await browser
+        .close()
+        .catch((e) => logger.warn({ err: String(e) }, 'browser close failed'));
     }
   }
-
-  throw lastError;
 }
