@@ -10,6 +10,9 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:api": "node dist/server-main.js",
+    "start:worker": "node dist/worker-main.js",
+    "start:autoscaler": "node dist/autoscaler.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -103,7 +103,14 @@ export interface AppConfig {
     /** Auth-username template; `{username}` and `{country}` are substituted. */
     usernameTemplate: string;
   };
+  /** Scrape jobs processed in parallel per worker process. */
   workerConcurrency: number;
+  /** Autoscaler ceiling on worker container replicas. */
+  maxWorkerReplicas: number;
+  /** Hard cap on total concurrent jobs (RAM budget guard). */
+  globalMaxConcurrentJobs: number;
+  /** PostgreSQL pool size for this process. */
+  pgPoolMax: number;
   /** Tabs (contexts) raced in parallel per request, each with its own proxy. */
   raceTabs: number;
   /** Total attempt budget per request across all tabs. */
@@ -142,6 +149,9 @@ const config: AppConfig = {
     usernameTemplate: str('DECODO_USERNAME_TEMPLATE', 'user-{username}-country-{country}'),
   },
   workerConcurrency: int('WORKER_CONCURRENCY', 1, 1),
+  maxWorkerReplicas: int('MAX_WORKER_REPLICAS', 8, 1),
+  globalMaxConcurrentJobs: int('GLOBAL_MAX_CONCURRENT_JOBS', 8, 1),
+  pgPoolMax: int('PG_POOL_MAX', 6, 1),
   raceTabs: int('TABS_PER_REQUEST', 5, 1),
   maxAttempts: int('MAX_ATTEMPTS', 40, 1),
   navTimeoutMs: int('NAV_TIMEOUT_MS', 45000, 1000),
@@ -160,6 +170,16 @@ const config: AppConfig = {
   logLevel: str('LOG_LEVEL', 'info'),
   selectorOverrides,
 };
+
+// Guard the RAM budget: the autoscaler must never be able to launch enough
+// worker replicas to exceed the global concurrent-job cap.
+if (config.maxWorkerReplicas * config.workerConcurrency > config.globalMaxConcurrentJobs) {
+  errors.push(
+    `MAX_WORKER_REPLICAS (${config.maxWorkerReplicas}) x WORKER_CONCURRENCY ` +
+      `(${config.workerConcurrency}) exceeds GLOBAL_MAX_CONCURRENT_JOBS ` +
+      `(${config.globalMaxConcurrentJobs})`,
+  );
+}
 
 if (errors.length > 0) {
   console.error('Configuration error(s):');

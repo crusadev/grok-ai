@@ -14,14 +14,21 @@ let pool: Pool | undefined;
 
 function getPool(): Pool {
   if (!pool) {
-    pool = new Pool({ connectionString: config.databaseUrl, max: 6 });
+    pool = new Pool({ connectionString: config.databaseUrl, max: config.pgPoolMax });
     pool.on('error', (err) => logger.warn({ err: err.message }, 'postgres pool error'));
   }
   return pool;
 }
 
-/** Idempotent schema migration — safe on both fresh and existing databases. */
+/**
+ * Idempotent schema migration — safe on both fresh and existing databases.
+ * Wrapped in a transaction-scoped advisory lock so the api and the (possibly
+ * many) worker processes can all call `initDb()` concurrently without racing
+ * on the DDL.
+ */
 const MIGRATION = `
+BEGIN;
+SELECT pg_advisory_xact_lock(4242424242);
 CREATE TABLE IF NOT EXISTS scrape_results (
   id         BIGSERIAL PRIMARY KEY,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -39,7 +46,8 @@ ALTER TABLE scrape_results ADD COLUMN IF NOT EXISTS error      TEXT;
 ALTER TABLE scrape_results ALTER COLUMN public_id TYPE TEXT;
 ALTER TABLE scrape_results ALTER COLUMN text DROP NOT NULL;
 ALTER TABLE scrape_results ALTER COLUMN sources DROP NOT NULL;
-CREATE UNIQUE INDEX IF NOT EXISTS scrape_results_public_id_key ON scrape_results (public_id);`;
+CREATE UNIQUE INDEX IF NOT EXISTS scrape_results_public_id_key ON scrape_results (public_id);
+COMMIT;`;
 
 const sleep = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));

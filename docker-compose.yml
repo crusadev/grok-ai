@@ -29,6 +29,59 @@ services:
       timeout: 5s
       retries: 10
 
+  api:
+    build: .
+    image: grok-ai:local
+    command: ["node", "dist/server-main.js"]
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: "postgres://grok:grok@db:5432/grok"
+      REDIS_URL: "redis://redis:6379"
+      PORT: "3000"
+      PG_POOL_MAX: "6"
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    build: .
+    image: grok-ai:local
+    command: ["node", "dist/worker-main.js"]
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: "postgres://grok:grok@db:5432/grok"
+      REDIS_URL: "redis://redis:6379"
+      WORKER_CONCURRENCY: "1"
+      PG_POOL_MAX: "3"
+      # Containers have no display — force headless regardless of .env.
+      HEADLESS: "true"
+      DEBUG_KEEP_BROWSER: "false"
+    # One job (one browser + 5 tabs) per container; sized so the cgroup
+    # OOM-killer never kills Chromium mid-job. 8 replicas x 3g = 24g <= 26g.
+    mem_limit: 3g
+    shm_size: 1g
+    # Give a scaled-down / stopped worker time to drain in-flight scrape jobs
+    # (each up to STREAM_TIMEOUT_MS) before Docker SIGKILLs it.
+    stop_grace_period: 150s
+    # Keep the Chromium sandbox usable in-container (vs the detectable --no-sandbox).
+    cap_add:
+      - SYS_ADMIN
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Shared CDN disk cache — first worker fetches an asset, the rest reuse it.
+      - grok_cdncache:/app/.cache/cdn
+
 volumes:
   grok_pgdata:
   grok_redis:
+  grok_cdncache:

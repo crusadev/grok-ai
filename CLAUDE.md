@@ -7,12 +7,16 @@
 - We dont log in or use registered accounts in any way
 
 ## Architecture
-TypeScript service. Entry `src/index.ts` (HTTP server + BullMQ worker). Async flow:
-`server.ts` POST creates a job (`db.ts`, status `processing`) and enqueues it (`queue.ts`);
-`worker.ts` runs `scrape.ts`, which launches ONE browser and races a pool of
-`TABS_PER_REQUEST` contexts — each its own proxy IP, first success wins, a walled tab is
-replaced — via `grok.ts`; the outcome is written back to PostgreSQL; the caller polls
-`GET /scrape/:public_id`. Redis + PostgreSQL run via `docker compose`.
+TypeScript service, runs as Docker Compose services: `api`, `worker` (scalable), `db`,
+`redis`. Async flow: `server.ts` POST creates a job (`db.ts`, status `processing`) and
+enqueues it (`queue.ts`); a `worker.ts` consumer runs `scrape.ts`, which launches ONE
+browser and races a pool of `TABS_PER_REQUEST` contexts — each its own proxy IP, first
+success wins, a walled tab is replaced — via `grok.ts`; the outcome is written back to
+PostgreSQL; the caller polls `GET /scrape/:public_id`.
+- Entrypoints: `server-main.ts` (api), `worker-main.ts` (worker), `autoscaler.ts` (host —
+  scales the `worker` service on queue depth); `index.ts` is single-process for `npm run dev`.
+- RAM is bounded by `MAX_WORKER_REPLICAS × WORKER_CONCURRENCY`; `config.ts` asserts it
+  against `GLOBAL_MAX_CONCURRENT_JOBS` and fails fast.
 - `config.ts` is the only place that reads `process.env`; it fails fast on bad config.
 - `proxy.ts` builds Decodo URLs; the rotating endpoint gives a fresh IP per launch, so a
   retry is just another attempt — do not add sticky-session tokens.

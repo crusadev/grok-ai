@@ -64,10 +64,33 @@ Requires Node.js ≥ 24 and Docker.
 ```bash
 npm install
 cp .env.example .env       # then fill in real Decodo credentials
-docker compose up -d       # starts PostgreSQL + Redis
 npm run build
-npm start                  # or: npm run dev
+docker compose up -d --build   # builds the image; starts db, redis, api, worker
 ```
+
+`api` is on `localhost:3000`. For local single-process debugging without Docker:
+`npm run dev`.
+
+## Scaling
+
+The stack runs as containers: **`api`** (HTTP), **`worker`** (BullMQ consumer — the
+scalable one), **`db`**, **`redis`**. Workers are stateless; scaling = running more
+`worker` containers.
+
+```bash
+# manual scale
+docker compose up -d --no-recreate --scale worker=4
+
+# dynamic — autoscale worker replicas on queue depth (runs on the host)
+npm run start:autoscaler
+```
+
+The autoscaler watches the BullMQ queue and scales `worker` between 1 and
+`MAX_WORKER_REPLICAS`. RAM is bounded by `MAX_WORKER_REPLICAS × WORKER_CONCURRENCY`
+(default 8 × 1 = 8 concurrent jobs, ~20 GB peak measured). Each worker container runs
+**one** job (one browser + 5 tabs) under a 3 GB `mem_limit` — sized so the cgroup
+OOM-killer never kills Chromium mid-job. On a single 32 GB PC ~8 concurrent jobs is the
+stable ceiling; CPU saturates before RAM does.
 
 The first launch downloads the stealth Chromium binary (~200 MB) to `~/.cloakbrowser`.
 The server pre-downloads it on boot so the first request is not delayed.
@@ -189,13 +212,16 @@ curl -X POST localhost:3000/scrape -H 'Content-Type: application/json' -d '{"cou
 
 ```
 src/
-  index.ts      entrypoint — HTTP server + worker startup, graceful shutdown
+  server-main.ts  api entrypoint — HTTP server only
+  worker-main.ts  worker entrypoint — BullMQ consumer only (scaled)
+  autoscaler.ts   host process — scales the worker service on queue depth
+  index.ts        single-process entrypoint (npm run dev)
   config.ts     env parsing/validation (single source of truth)
   server.ts     Express API (async POST + poll endpoints)
   queue.ts      BullMQ queue + Redis connection
   worker.ts     BullMQ worker — runs scrapes, writes outcomes to the DB
-  scrape.ts     retry rounds; races N browsers, first success wins
-  grok.ts       one Grok automation attempt
+  scrape.ts     one browser, races TABS_PER_REQUEST proxied tabs, first wins
+  grok.ts       one Grok automation attempt (per context/tab)
   selectors.ts  grok.com selectors (verified against the live site)
   assetCache.ts local cache for grok.com CDN assets (proxy-bandwidth saving)
   db.ts         PostgreSQL job storage (create / complete / fail / get)

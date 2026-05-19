@@ -24,8 +24,12 @@ function getQueue(): Queue<ScrapeJobData> {
 
 /** Enqueue a scrape job for the worker to process. */
 export async function enqueueScrape(data: ScrapeJobData): Promise<void> {
+  // attempts > 1 so a job whose worker is hard-killed mid-scrape (e.g. an
+  // autoscaler scale-down) is re-queued by BullMQ's stalled-job detection and
+  // finished by another worker — otherwise its DB row stays 'processing'.
+  // The processor itself never throws, so a healthy job only ever runs once.
   await getQueue().add('scrape', data, {
-    attempts: 1,
+    attempts: 3,
     removeOnComplete: 200,
     removeOnFail: 200,
   });
