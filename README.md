@@ -18,5 +18,9 @@ To make this scalable is not really hard, we will use K8 clusters, where each po
 Through the selector we observe when the paywall appears and we instantly close the browser and try again.
 Currently im using the humanize parameter, from what ive seen it takes too long to write the prompt
 
+## CDN assets Caching
+I saw that for every grok.com request the cdn was receiving 10 requests, this was burning the proxies bandwidth fast, these assets were used for telemetry ( mouse, user behavior ) if we simply ignored them we would have been flagged as suspicious, the solution is to accept the assets on the first page load, store ( cache ) them and then on the next loads we would simply intercept the requests so they dont pass through our proxy and serve them from our cache instead effectively reducing the cdn traffic drastically ( more than 90% ).
+This approach also made the page load faster
+
 ## Side notes
-For now the country with the least paywall scenarios is Canada
+- The paywall is pretty random and really present, from 11 tries we got an 85% paywall scenarios

@@ -5,6 +5,7 @@
  * On any missing/invalid variable, prints an aggregated error and exits the
  * process: a misconfigured server should fail fast at startup, not mid-request.
  */
+import path from 'node:path';
 import { config as loadDotenv } from 'dotenv';
 
 loadDotenv();
@@ -113,6 +114,10 @@ export interface AppConfig {
   humanize: boolean;
   /** Debug: leave the browser open after an attempt so the DOM can be inspected. */
   debugKeepBrowser: boolean;
+  /** Cache grok.com CDN assets locally to avoid re-fetching them via the proxy. */
+  cdnCacheEnabled: boolean;
+  cdnCacheDir: string;
+  cdnCacheHosts: string[];
   defaultCountry: string;
   logLevel: string;
   /** Per-element selector overrides; empty list means "use built-in defaults". */
@@ -142,6 +147,11 @@ const config: AppConfig = {
   headless: bool('HEADLESS', true),
   humanize: bool('HUMANIZE', true),
   debugKeepBrowser: bool('DEBUG_KEEP_BROWSER', false),
+  cdnCacheEnabled: bool('CDN_CACHE_ENABLED', true),
+  cdnCacheDir: path.resolve(str('CDN_CACHE_DIR', '.cache/cdn')),
+  cdnCacheHosts: list('CDN_CACHE_HOSTS').length > 0
+    ? list('CDN_CACHE_HOSTS')
+    : ['cdn.grok.com'],
   defaultCountry: country('DEFAULT_COUNTRY', 'us'),
   logLevel: str('LOG_LEVEL', 'info'),
   selectorOverrides,

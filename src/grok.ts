@@ -5,9 +5,10 @@
  * launch -> navigate -> prompt as guest -> wait for the streamed answer ->
  * extract. It throws typed errors; the retry policy lives in scrape.ts.
  */
-import type { Browser, Page } from 'playwright-core';
+import type { Browser, Page, Route } from 'playwright-core';
 import config from './config';
 import { logger } from './logger';
+import { getAsset, putAsset } from './assetCache';
 import {
   AppError,
   CloudflareError,
@@ -101,7 +102,7 @@ export async function runGrokAttempt(opts: GrokAttemptOptions): Promise<GrokResu
     const page = await browser.newPage();
     page.setDefaultTimeout(config.navTimeoutMs);
 
-    await installRequestBlocking(page);
+    await installNetworkInterception(page);
     await navigate(page);
     await dismissCookieBanner(page);
     await assertNoBlockers(page, 'after navigation');
@@ -131,22 +132,90 @@ export async function runGrokAttempt(opts: GrokAttemptOptions): Promise<GrokResu
   }
 }
 
+/** Response headers that must not be replayed when fulfilling from cache. */
+const STRIP_HEADERS = new Set([
+  'content-encoding',
+  'content-length',
+  'transfer-encoding',
+  'connection',
+  'set-cookie',
+]);
+
+function safeHeaders(headers: Record<string, string>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(headers)) {
+    if (!STRIP_HEADERS.has(key.toLowerCase())) out[key] = value;
+  }
+  return out;
+}
+
 /**
- * Abort image & media requests to conserve proxy bandwidth (10GB budget).
- * CSS and fonts are kept — they matter for stealth fingerprinting on Linux.
+ * Network interception:
+ *  - grok.com CDN assets are cached locally — served from the cache when
+ *    present, otherwise fetched once through the proxy and cached. They are
+ *    never blocked, so the browser's request pattern stays consistent for
+ *    anti-bot detection.
+ *  - Non-CDN images & media are aborted to conserve proxy bandwidth.
  */
-async function installRequestBlocking(page: Page): Promise<void> {
+async function installNetworkInterception(page: Page): Promise<void> {
   const blockedTypes = new Set(['image', 'media']);
   const blockedExt =
     /\.(png|jpe?g|gif|webp|avif|svg|ico|bmp|mp4|m4v|webm|mov|mp3|wav|ogg)(\?|#|$)/i;
-  await page.route('**/*', (route) => {
+
+  await page.route('**/*', async (route) => {
     const req = route.request();
-    if (blockedTypes.has(req.resourceType()) || blockedExt.test(req.url())) {
-      route.abort().catch(() => undefined);
-    } else {
-      route.continue().catch(() => undefined);
+    const url = req.url();
+    let host = '';
+    try {
+      host = new URL(url).hostname;
+    } catch {
+      // malformed URL — leave host empty
     }
+
+    if (
+      config.cdnCacheEnabled &&
+      req.method() === 'GET' &&
+      config.cdnCacheHosts.includes(host)
+    ) {
+      await serveCdnAsset(route, url);
+      return;
+    }
+
+    if (blockedTypes.has(req.resourceType()) || blockedExt.test(url)) {
+      await route.abort().catch(() => undefined);
+      return;
+    }
+    await route.continue().catch(() => undefined);
   });
+}
+
+/** Serve a CDN asset from the local cache, or fetch-and-cache it on a miss. */
+async function serveCdnAsset(route: Route, url: string): Promise<void> {
+  const cached = await getAsset(url);
+  if (cached) {
+    await route
+      .fulfill({
+        status: cached.status,
+        headers: safeHeaders(cached.headers),
+        body: cached.body,
+      })
+      .catch(() => undefined);
+    return;
+  }
+  try {
+    const response = await route.fetch();
+    const status = response.status();
+    const headers = response.headers();
+    const body = await response.body();
+    if (status === 200) {
+      await putAsset(url, { status, headers, body });
+    }
+    await route
+      .fulfill({ status, headers: safeHeaders(headers), body })
+      .catch(() => undefined);
+  } catch {
+    await route.continue().catch(() => undefined);
+  }
 }
 
 async function navigate(page: Page): Promise<void> {
