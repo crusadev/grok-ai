@@ -70,8 +70,9 @@ services:
     mem_limit: 1800m
     shm_size: 512m
     # Give a scaled-down / stopped worker time to drain in-flight scrape jobs
-    # (each up to STREAM_TIMEOUT_MS) before Docker SIGKILLs it.
-    stop_grace_period: 150s
+    # (each up to STREAM_TIMEOUT_MS) before Docker SIGKILLs it. Set above the
+    # observed totalMs.p99 (~190s) so a job near the tail can always finish.
+    stop_grace_period: 240s
     # Keep the Chromium sandbox usable in-container (vs the detectable --no-sandbox).
     cap_add:
       - SYS_ADMIN

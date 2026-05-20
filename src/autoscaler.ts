@@ -14,7 +14,7 @@ import { logger } from './logger';
 import { QUEUE_NAME, createRedisConnection } from './queue';
 
 const execFileAsync = promisify(execFile);
-const TICK_MS = 15000;
+const TICK_MS = 5000;
 
 const connection = createRedisConnection();
 const queue = new Queue(QUEUE_NAME, { connection });
@@ -22,11 +22,18 @@ const queue = new Queue(QUEUE_NAME, { connection });
 let currentReplicas = 1;
 let applying = false;
 
-/** Worker replicas wanted for the current backlog, clamped to the RAM-safe cap. */
-function desiredReplicas(backlog: number): number {
-  if (backlog === 0) return 1;
-  const want = Math.ceil(backlog / config.workerConcurrency);
-  return Math.min(Math.max(want, 1), config.maxWorkerReplicas);
+/**
+ * Replicas wanted for the current backlog. Scale-up snaps to target immediately;
+ * scale-down is held while any job is active, because Compose kills workers by
+ * the highest replica index and we have no way to guarantee those indices are
+ * the idle ones — so we wait for the queue to drain fully before shrinking.
+ */
+function desiredReplicas(waiting: number, active: number, current: number): number {
+  const want = Math.ceil((waiting + active) / config.workerConcurrency) || 1;
+  const target = Math.min(Math.max(want, 1), config.maxWorkerReplicas);
+  if (target >= current) return target;
+  if (active > 0) return current;
+  return target;
 }
 
 async function scaleTo(replicas: number): Promise<void> {
@@ -48,7 +55,7 @@ async function tick(): Promise<void> {
       queue.getWaitingCount(),
       queue.getActiveCount(),
     ]);
-    const want = desiredReplicas(waiting + active);
+    const want = desiredReplicas(waiting, active, currentReplicas);
     if (want !== currentReplicas) {
       applying = true;
       logger.info(

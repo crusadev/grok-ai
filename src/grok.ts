@@ -210,12 +210,21 @@ function safeHeaders(headers: Record<string, string>): Record<string, string> {
  *    present, otherwise fetched once through the proxy and cached. They are
  *    never blocked, so the browser's request pattern stays consistent for
  *    anti-bot detection.
+ *  - URLs matching `cdnCachePathPatterns` (e.g. grok.com's own /_next/static
+ *    bundles) are routed through the same cache, so the heavy JS/CSS payload
+ *    only crosses the proxy once per worker host.
  *  - Non-CDN images & media are aborted to conserve proxy bandwidth.
  */
 async function installNetworkInterception(page: Page): Promise<void> {
   const blockedTypes = new Set(['image', 'media']);
   const blockedExt =
     /\.(png|jpe?g|gif|webp|avif|svg|ico|bmp|mp4|m4v|webm|mov|mp3|wav|ogg)(\?|#|$)/i;
+  const matchesCachedPath = (url: string): boolean => {
+    for (const re of config.cdnCachePathPatterns) {
+      if (re.test(url)) return true;
+    }
+    return false;
+  };
 
   await page.route('**/*', async (route) => {
     const req = route.request();
@@ -230,7 +239,7 @@ async function installNetworkInterception(page: Page): Promise<void> {
     if (
       config.cdnCacheEnabled &&
       req.method() === 'GET' &&
-      config.cdnCacheHosts.includes(host)
+      (config.cdnCacheHosts.includes(host) || matchesCachedPath(url))
     ) {
       await serveCdnAsset(route, url);
       return;

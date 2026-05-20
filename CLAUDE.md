@@ -31,5 +31,3 @@ replaced; the outcome is written back to PostgreSQL; the caller polls
 ## Known risks / gotchas
 - `cloakbrowser` is ESM-only; `grok.ts` loads it via a `new Function('s','return import(s)')`
   shim because the CommonJS build would otherwise rewrite `import()` to `require()`.
-- Proxy credentials must be valid Decodo creds; the auth-username format is plan-dependent
-  and configurable via `DECODO_USERNAME_TEMPLATE`.

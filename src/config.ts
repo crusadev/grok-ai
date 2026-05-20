@@ -93,15 +93,24 @@ const SELECTOR_ENV: Record<SelectorKey, string> = {
   sourcesPanel: 'SELECTOR_SOURCES_PANEL',
 };
 
+export type ProxyProviderName = 'decodo' | 'privateproxy';
+
+export interface ProxyGatewayBlock {
+  username: string;
+  password: string;
+  host: string;
+  port: number;
+  /** Auth-username template; `{username}` and `{country}` are substituted. */
+  usernameTemplate: string;
+}
+
 export interface AppConfig {
   port: number;
   proxy: {
-    username: string;
-    password: string;
-    host: string;
-    port: number;
-    /** Auth-username template; `{username}` and `{country}` are substituted. */
-    usernameTemplate: string;
+    /** Active provider — picks which sub-block the factory instantiates. */
+    provider: ProxyProviderName;
+    decodo: ProxyGatewayBlock;
+    privateproxy: ProxyGatewayBlock;
   };
   /** Scrape jobs processed in parallel per worker process. */
   workerConcurrency: number;
@@ -129,6 +138,13 @@ export interface AppConfig {
   cdnCacheEnabled: boolean;
   cdnCacheDir: string;
   cdnCacheHosts: string[];
+  /**
+   * Extra URL patterns to cache (compiled regex). Applied to ANY host, so
+   * grok.com's own static bundles (e.g. /_next/static/*) can be cached without
+   * also caching the dynamic HTML / streaming-chat endpoint. Each pattern is
+   * a JavaScript regex tested against the full URL.
+   */
+  cdnCachePathPatterns: RegExp[];
   /** PostgreSQL connection string (job storage). */
   databaseUrl: string;
   /** Redis connection string (BullMQ queue). */
@@ -143,14 +159,60 @@ const selectorOverrides = Object.fromEntries(
   (Object.keys(SELECTOR_ENV) as SelectorKey[]).map((key) => [key, list(SELECTOR_ENV[key])]),
 ) as Record<SelectorKey, string[]>;
 
+// Only the credentials for the *active* provider are required — picking
+// 'privateproxy' must not force a Decodo username to be set, and vice versa.
+const providerRaw = str('PROXY_PROVIDER', 'decodo').toLowerCase();
+if (providerRaw !== 'decodo' && providerRaw !== 'privateproxy') {
+  errors.push(`Invalid PROXY_PROVIDER="${providerRaw}": expected 'decodo' or 'privateproxy'`);
+}
+const provider: ProxyProviderName = providerRaw === 'privateproxy' ? 'privateproxy' : 'decodo';
+
+function gatewayBlock(opts: {
+  active: boolean;
+  userVar: string;
+  passVar: string;
+  hostVar: string;
+  hostDefault: string;
+  portVar: string;
+  portDefault: number;
+  templateVar: string;
+  templateDefault: string;
+}): ProxyGatewayBlock {
+  return {
+    username: opts.active ? requiredStr(opts.userVar) : str(opts.userVar, ''),
+    password: opts.active ? requiredStr(opts.passVar) : str(opts.passVar, ''),
+    host: str(opts.hostVar, opts.hostDefault),
+    port: int(opts.portVar, opts.portDefault, 1),
+    usernameTemplate: str(opts.templateVar, opts.templateDefault),
+  };
+}
+
 const config: AppConfig = {
   port: int('PORT', 3000, 1),
   proxy: {
-    username: requiredStr('DECODO_USERNAME'),
-    password: requiredStr('DECODO_PASSWORD'),
-    host: str('DECODO_HOST', 'gate.decodo.com'),
-    port: int('DECODO_PORT', 7000, 1),
-    usernameTemplate: str('DECODO_USERNAME_TEMPLATE', 'user-{username}-country-{country}'),
+    provider,
+    decodo: gatewayBlock({
+      active: provider === 'decodo',
+      userVar: 'DECODO_USERNAME',
+      passVar: 'DECODO_PASSWORD',
+      hostVar: 'DECODO_HOST',
+      hostDefault: 'gate.decodo.com',
+      portVar: 'DECODO_PORT',
+      portDefault: 7000,
+      templateVar: 'DECODO_USERNAME_TEMPLATE',
+      templateDefault: 'user-{username}-country-{country}',
+    }),
+    privateproxy: gatewayBlock({
+      active: provider === 'privateproxy',
+      userVar: 'PRIVATEPROXY_USERNAME',
+      passVar: 'PRIVATEPROXY_PASSWORD',
+      hostVar: 'PRIVATEPROXY_HOST',
+      hostDefault: 'edge1-us.privateproxy.me',
+      portVar: 'PRIVATEPROXY_PORT',
+      portDefault: 8888,
+      templateVar: 'PRIVATEPROXY_USERNAME_TEMPLATE',
+      templateDefault: '{username}-{country}',
+    }),
   },
   workerConcurrency: int('WORKER_CONCURRENCY', 1, 1),
   maxWorkerReplicas: int('MAX_WORKER_REPLICAS', 16, 1),
@@ -170,6 +232,24 @@ const config: AppConfig = {
   cdnCacheHosts: list('CDN_CACHE_HOSTS').length > 0
     ? list('CDN_CACHE_HOSTS')
     : ['cdn.grok.com'],
+  // Defaults catch Next.js content-hashed bundles on grok.com and any generic
+  // static asset extension. Regex sources can't contain a literal comma —
+  // commas are the env-var separator. Use Unicode escapes if you really need one.
+  cdnCachePathPatterns: (() => {
+    const raw = list('CDN_CACHE_PATH_PATTERNS');
+    const sources = raw.length > 0
+      ? raw
+      : ['/_next/static/', '\\.(?:js|css|woff2?|ttf|eot|otf)(?:\\?|#|$)'];
+    const out: RegExp[] = [];
+    for (const s of sources) {
+      try {
+        out.push(new RegExp(s));
+      } catch (e) {
+        errors.push(`Invalid CDN_CACHE_PATH_PATTERNS entry "${s}": ${(e as Error).message}`);
+      }
+    }
+    return out;
+  })(),
   databaseUrl: str('DATABASE_URL', 'postgres://grok:grok@localhost:5433/grok'),
   redisUrl: str('REDIS_URL', 'redis://localhost:6380'),
   defaultCountry: country('DEFAULT_COUNTRY', 'us'),

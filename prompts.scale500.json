@@ -1,0 +1,3002 @@
+[
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in desalination.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Marie Curie?",
+    "country": "gb",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Find recent articles on lab-grown meat.",
+    "country": "us",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Tokyo right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Samsung this year?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in quantum computing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited K2 most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Japan?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did OpenAI announce recently?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the snow leopard.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on autonomous driving.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Apple stock?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a country in Asia.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in lab-grown meat.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of CRISPR gene editing research.",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is CRISPR gene editing?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Was the fall of the Berlin Wall in the 20th century?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Richard Feynman.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Give me sources on Marie Curie.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in lab-grown meat.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Canada?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about large language models in 2026?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did Shopify announce recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses tagine.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Egypt.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Cairo this month.",
+    "country": "gb",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Recent statistics on tourism in Canada.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of CRISPR gene editing research.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from MLB.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Norway?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional ceviche.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses tagine.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on mRNA vaccines.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Vietnam.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Charles Darwin.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Boeing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Brazil?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about mRNA vaccines.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Annapurna most recently?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about desalination.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Shopify this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the komodo dragon.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in reusable rockets.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Albert Einstein?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in CRISPR gene editing.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What does blue whale primarily eat?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does snow leopard primarily eat?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Peru?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of mRNA vaccines research.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does kakapo primarily eat?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the giant panda.",
+    "country": "fr",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in lab-grown meat.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Mumbai right now?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about large language models in 2026?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about lab-grown meat.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Anthropic stock?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Australia?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did Apple announce recently?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional feijoada.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of CRISPR gene editing research.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Portugal.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of feijoada restaurants in Seoul.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Tokyo this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Toronto this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Stephen Hawking.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with TSMC this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in New Zealand.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Stephen Hawking.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses butter chicken.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Kenya?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Buenos Aires this week?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about OpenAI?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest standings in the NBA.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in solid-state batteries.",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Seoul?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does giant panda primarily eat?",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Germany?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about mRNA vaccines.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Rainier most recently?",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the komodo dragon.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of ceviche restaurants in Mexico City.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Argentina to the east?",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Reykjavík right now?",
+    "country": "au",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What did SpaceX announce recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in the Cricket World Cup?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Was the Apollo 11 mission in the 20th century?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about large language models in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in solid-state batteries.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Mumbai this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Isaac Newton.",
+    "country": "us",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "What controversies surround Hugging Face this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the axolotl.",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What field is Carl Sagan known for?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Marie Curie?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Germany to the east?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Montréal right now?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest standings in the Ryder Cup.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the moon landing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on desalination.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with Shopify this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Argentina to the east?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Fuji most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about CRISPR gene editing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is desalination?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is fusion energy?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Denali most recently?",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the orca.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Cairo right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of ceviche restaurants in Vancouver.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Albert Einstein.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Iceland?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Marie Curie.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did Hugging Face announce recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does giant panda primarily eat?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Shopify?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the moon landing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Shopify?",
+    "country": "gb",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is happening with Apple this week?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Reykjavík?",
+    "country": "au",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What field is Isaac Newton known for?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Annapurna most recently?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses pad thai.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Japan?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in desalination.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about SpaceX?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Toronto?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in lab-grown meat.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Stripe.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Mexico City right now?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does komodo dragon primarily eat?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What continent is Seoul on?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about reusable rockets.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Albert Einstein?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Brazil?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional pho.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Stripe.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the blue whale.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does orca primarily eat?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the blue whale.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Toyota this year?",
+    "country": "fr",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the platypus.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What did OpenAI announce recently?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Argentina?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of feijoada restaurants in Istanbul.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Annapurna most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Was the Apollo 11 mission in the 20th century?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Tokyo this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Brazil.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is mRNA vaccines?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Marie Curie.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Kenya?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What continent is Buenos Aires on?",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of butter chicken restaurants in Mexico City.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Hugging Face stock?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Norway?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Mumbai right now?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for SpaceX stock?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Germany.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Brazil.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Toyota stock?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about reusable rockets.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about lab-grown meat in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the axolotl.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Portugal?",
+    "country": "ca",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Peru?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What field is Marie Curie known for?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Anthropic this year?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of pad thai restaurants in Mumbai.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Was the Manhattan Project in the 20th century?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Vancouver right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Reykjavík this week?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional pho.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Rainier most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for TSMC stock?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Albert Einstein?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What continent is Seoul on?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Montréal this week?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Name one mountain.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about desalination.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about autonomous driving.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Charles Darwin.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mumbai this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about autonomous driving in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in mRNA vaccines.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Toronto this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about mRNA vaccines.",
+    "country": "fr",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Alan Turing.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who currently leads the NHL?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the Ryder Cup.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional paella.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Vancouver right now?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Nvidia?",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of New Zealand?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Hugging Face stock?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does platypus primarily eat?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Carl Sagan.",
+    "country": "de",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Find recent articles on solid-state batteries.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Tesla.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in lab-grown meat.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Peru?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is the current ticker price for SpaceX stock?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find recent articles on large language models.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What ocean borders Vietnam to the east?",
+    "country": "au",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Peru?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional ceviche.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of tacos al pastor restaurants in Mumbai.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who currently leads the NHL?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the platypus.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in mRNA vaccines.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Egypt.",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in reusable rockets.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Name a dish that uses ramen.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "List recent developments in CRISPR gene editing.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Matterhorn most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in mRNA vaccines.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Richard Feynman.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Canada.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Anthropic this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did Tesla announce recently?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mumbai this week?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Australia?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mexico City this week?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of pho restaurants in Istanbul.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in New Zealand.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Albert Einstein.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional tagine.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Berlin this month.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Who currently leads the Premier League?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find recent articles on lab-grown meat.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Peru to the east?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of pho restaurants in Cairo.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Buenos Aires this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Vietnam?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Nvidia stock?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did OpenAI announce recently?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Nvidia.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Marie Curie?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Peru to the east?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses tacos al pastor.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Latest scores from the Olympics.",
+    "country": "ca",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Latest scores from the Olympics.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Albert Einstein.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What does giant panda primarily eat?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about solid-state batteries.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mumbai this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Iceland?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in quantum computing.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Norway?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Anthropic stock?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Toyota stock?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Name a country in Europe.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of Australia?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround OpenAI this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Norway.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of feijoada restaurants in São Paulo.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Toronto this month.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional tagine.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Lagos right now?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses pad thai.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Berlin this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mumbai this week?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of tacos al pastor restaurants in Seoul.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Istanbul?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Was the Apollo 11 mission in the 20th century?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in MLB?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Tesla?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the UFC.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the platypus.",
+    "country": "gb",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Who currently leads the Tour de France?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in CRISPR gene editing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of fusion energy research.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Brazil?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Germany.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Canada?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about solid-state batteries.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Australia?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who currently leads the Premier League?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Portugal?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Boeing?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Montréal right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did Samsung announce recently?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Iceland?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Vancouver this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses ceviche.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Australia to the east?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Who currently leads the Tour de France?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What field is Isaac Newton known for?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Sydney this week?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What field is Carl Sagan known for?",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Vancouver this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Roughly how tall is Mount Rainier?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Anthropic?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Who is the current head of government of Portugal?",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Lagos?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Stripe.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Buenos Aires right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Alan Turing.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Current status of quantum computing research.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Apple?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Nikola Tesla.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name one mountain.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Shopify stock?",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Katherine Johnson.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Portugal to the east?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Anthropic this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on mRNA vaccines.",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the first heart transplant.",
+    "country": "us",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is trending in Buenos Aires right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Rainier most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of pho restaurants in Montréal.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with Stripe this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Germany?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional paella.",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the blue whale.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in autonomous driving.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in the Ryder Cup?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the giant panda.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of tacos al pastor restaurants in Cairo.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does axolotl primarily eat?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mexico City this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the discovery of penicillin.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of CRISPR gene editing research.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Japan?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about desalination in 2026?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with SpaceX this week?",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional sushi.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in autonomous driving.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the giant panda.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Reykjavík right now?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about mRNA vaccines.",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of desalination research.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest standings in the FIFA World Cup.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in desalination.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the Olympics.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is autonomous driving?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Rosalind Franklin?",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Brazil?",
+    "country": "au",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional pad thai.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in the Cricket World Cup?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Brazil to the east?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Mumbai right now?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name one mountain.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround TSMC this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Samsung stock?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the NHL.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the capital of New Zealand?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about mRNA vaccines in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Stephen Hawking?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Japan?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Brazil?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Current status of desalination research.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in large language models.",
+    "country": "au",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the giant panda.",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Hugging Face this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional sushi.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What did Samsung announce recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the invention of the transistor.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Albert Einstein.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the first heart transplant.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the platypus.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Apple?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Stephen Hawking.",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Cite a 2026 article about autonomous driving.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the axolotl.",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Seoul this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Charles Darwin.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recipe source for traditional ramen.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about fusion energy in 2026?",
+    "country": "jp",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is the current population of Buenos Aires?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about solid-state batteries in 2026?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Elbrus most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Tokyo this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest standings in the Cricket World Cup.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What language is most spoken in Australia?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the Manhattan Project.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the blue whale.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name one mountain.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is mRNA vaccines?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in lab-grown meat.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Mistral AI?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in quantum computing.",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about large language models in 2026?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the Apollo 11 mission.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Tesla stock?",
+    "country": "jp",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Was the fall of the Berlin Wall in the 20th century?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in lab-grown meat.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Isaac Newton.",
+    "country": "au",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Istanbul this week?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find recent articles on CRISPR gene editing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with Hugging Face this week?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Mexico City this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the NBA.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround TSMC this year?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the snow leopard.",
+    "country": "jp",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the Ryder Cup.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the giant panda.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Vietnam?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current ticker price for Nvidia stock?",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Tesla this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on desalination.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Berlin?",
+    "country": "gb",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is happening with Boeing this week?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in quantum computing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent statistics on tourism in Germany.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Alan Turing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in Formula 1?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Summarize the latest reporting on the discovery of penicillin.",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "Latest research on the blue whale.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Brazil?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Cairo this month.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Australia?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find recent articles on reusable rockets.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for São Paulo this week?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest standings in the FIFA World Cup.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Name a dish that uses biryani.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did OpenAI announce recently?",
+    "country": "us",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Give me sources on Richard Feynman.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Roughly how tall is Mount Logan?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Anthropic.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who currently leads the Premier League?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to New Zealand?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What does kakapo primarily eat?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Egypt?",
+    "country": "fr",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find news from Berlin this month.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Ada Lovelace.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "List recent developments in lab-grown meat.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What did TSMC announce recently?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Marie Curie.",
+    "country": "us",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "What is the current population of São Paulo?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Tesla.",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What does giant panda primarily eat?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the current population of Tokyo?",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find a recent biography source for Rosalind Franklin.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Rainier most recently?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Show me reviews of sushi restaurants in Reykjavík.",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What ocean borders Australia to the east?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Peru?",
+    "country": "de",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Summarize the latest reporting on the first heart transplant.",
+    "country": "gb",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to New Zealand?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about fusion energy in 2026?",
+    "country": "br",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is happening with OpenAI this week?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the Premier League.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Rosalind Franklin?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What sport is played in the Premier League?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the kakapo.",
+    "country": "au",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Shopify this year?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest scores from the NBA.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Nikola Tesla.",
+    "country": "ca",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Find a recipe source for traditional ramen.",
+    "country": "de",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is the weather forecast for Mexico City this week?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find the official website for Shopify.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Fuji most recently?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in fusion energy.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround TSMC this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Nvidia this year?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Ada Lovelace?",
+    "country": "ca",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What new movies or shows feature Albert Einstein?",
+    "country": "us",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "What are the entry requirements for tourists to Norway?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent conservation news about the blue whale.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find expert opinions on CRISPR gene editing.",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in lab-grown meat.",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about large language models in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Find recent articles on CRISPR gene editing.",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about mRNA vaccines in 2026?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "In one sentence, what is fusion energy?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What are the latest news about Boeing?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What papers were published about desalination in 2026?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Latest research on the manatee.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited Mount Fuji most recently?",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Peru?",
+    "country": "gb",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give one famous scientist.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Give me sources on Nikola Tesla.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Katherine Johnson?",
+    "country": "us",
+    "markdown": false,
+    "html": false
+  }
+]

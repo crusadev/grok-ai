@@ -49,10 +49,12 @@ function shutdown(signal: string): void {
     process.exit(0);
   })();
   // Force-exit only if a job genuinely hangs past the streaming timeout.
+  // Stays comfortably under docker-compose stop_grace_period (240s) so we are
+  // always the one who terminates the process, never Docker's SIGKILL.
   setTimeout(() => {
     logger.warn('forced shutdown after drain timeout');
     process.exit(1);
-  }, 135000).unref();
+  }, 225000).unref();
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));

@@ -1,0 +1,62 @@
+[
+  {
+    "prompt": "Give me sources on Ada Lovelace.",
+    "country": "ca",
+    "markdown": true,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in desalination.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What new movies or shows feature Marie Curie?",
+    "country": "gb",
+    "markdown": true,
+    "html": true
+  },
+  {
+    "prompt": "Find recent articles on lab-grown meat.",
+    "country": "us",
+    "markdown": false,
+    "html": true
+  },
+  {
+    "prompt": "What is the tallest mountain in the world?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What is trending in Tokyo right now?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "What controversies surround Samsung this year?",
+    "country": "fr",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Recent breakthroughs in quantum computing.",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who summited K2 most recently?",
+    "country": "ca",
+    "markdown": false,
+    "html": false
+  },
+  {
+    "prompt": "Who is the current head of government of Japan?",
+    "country": "jp",
+    "markdown": false,
+    "html": false
+  }
+]
