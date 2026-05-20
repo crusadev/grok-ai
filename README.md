@@ -345,3 +345,121 @@ es.onmessage = (msg) => {
 
 `uptime` is the api process uptime in seconds.
 
+---
+
+## Load testing
+
+Three pre-built prompt slices ship in the repo, all sampled from the same 1000-prompt source (`prompts.json`):
+
+| File | Size | Use for |
+|---|---|---|
+| `prompts.scale10.json`  | 10  | Smoke test code changes |
+| `prompts.scale60.json`  | 60  | Throughput + autoscaler validation |
+| `prompts.scale500.json` | 500 | Full unattended scale run |
+
+Make sure the stack is up first (`docker compose up -d`) and that the **autoscaler is running on the host** (otherwise everything queues against a single worker):
+
+```bash
+node dist/autoscaler.js                      # foreground
+# or:
+nohup node dist/autoscaler.js > runs/autoscaler.log 2>&1 & disown
+```
+
+Each run writes per-job NDJSON + an aggregate summary under `runs/`. The summary has the headline numbers (success rate, p50/p95/p99, throughput, error breakdown).
+
+### 10-prompt smoke (~1.5 min)
+
+```bash
+node scripts/run-load.mjs \
+  --prompts=prompts.scale10.json \
+  --concurrency=10 \
+  --poll-ms=2000 \
+  --out=runs/scale10.ndjson
+```
+
+Concurrency 10 means all ten are submitted at once, so the autoscaler immediately ramps from 1 → 8 workers. Expect 10/10 success and the run to finish around the time `scrapeMs.p95` of a single job suggests.
+
+### 60-prompt throughput check (~5 min)
+
+```bash
+node scripts/run-load.mjs \
+  --prompts=prompts.scale60.json \
+  --concurrency=30 \
+  --poll-ms=2000 \
+  --out=runs/scale60.ndjson
+```
+
+This is the run that validates the autoscaler's full lifecycle: scale-up under burst, sustained saturation at the cap, and graceful scale-down once the queue drains. Good to pair with the scaling monitor (see below).
+
+### 500-prompt scale run (~45 min, unattended)
+
+For long runs use the driver script — it backgrounds the monitor + load test together and prints a `DONE` marker when finished, so a single `tail` reveals everything:
+
+```bash
+nohup bash scripts/run-500-driver.sh > runs/pp500.driver.log 2>&1 & disown
+
+# Later (anywhere from 30 min onward):
+tail -40 runs/pp500.driver.log              # status + headline summary
+cat runs/pp500.summary.json                  # aggregate metrics
+```
+
+The driver uses `concurrency=50`, `poll-ms=3000`, and a 5-minute client-side per-job timeout. With 8 workers and ~50s/job, expect ~45 minutes total wall.
+
+### Optional: watch scaling in real time
+
+Run alongside any of the above to record replica + queue depth every few seconds:
+
+```bash
+node scripts/scale-monitor.mjs --tick=2000 --out=runs/scale.monitor.ndjson
+# Ctrl-C when the load test finishes — flushes the ndjson cleanly.
+```
+
+Read the timeline back with:
+
+```bash
+node -e '
+const lines = require("fs").readFileSync("runs/scale.monitor.ndjson","utf8")
+  .trim().split("\n").map(JSON.parse);
+let prev;
+for (const l of lines) {
+  if (!prev || l.replicas!==prev.replicas || l.waiting!==prev.waiting || l.active!==prev.active) {
+    console.log(String(l.elapsedSec).padStart(6)+"s  rep="+String(l.replicas).padStart(2)+
+      "  w="+String(l.waiting).padStart(2)+"  a="+String(l.active).padStart(2));
+  }
+  prev = l;
+}'
+```
+
+### Custom prompt counts
+
+Slice any size off `prompts.json` with one line:
+
+```bash
+node -e "const p=require('./prompts.json'); \
+  require('fs').writeFileSync('prompts.scaleN.json', JSON.stringify(p.slice(0,N),null,2))"
+```
+
+Replace `N` with the count you want.
+
+### Common knobs on `run-load.mjs`
+
+| Flag | Default | Notes |
+|---|---|---|
+| `--prompts=<path>` | `prompts.json` | Source file |
+| `--concurrency=<n>` | `50` | In-flight cap at the client; the queue absorbs the rest |
+| `--poll-ms=<n>` | `1500` | How often to poll each in-flight job; bump for large concurrency |
+| `--job-timeout-ms=<n>` | `300000` (5 min) | Client gives up after this — but the server keeps working (see `LOAD_TEST_REPORT.md §1.1`) |
+| `--base=<url>` | `http://localhost:3000` | Target API |
+| `--out=<path>` | `runs/<ts>.ndjson` | NDJSON output (summary auto-derives the path) |
+
+### Cleaning up between runs
+
+The DB and queue accumulate state across runs. To start fresh:
+
+```bash
+docker compose down -v        # wipes db, redis, and the cdn cache volume
+docker compose up -d --build
+```
+
+That's a hard reset — drops history, analytics, and the warm CDN cache. The next run pays the cache warmup tax (~10–15% slower) before steady-state.
+
